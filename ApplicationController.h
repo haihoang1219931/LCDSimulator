@@ -1,44 +1,41 @@
 #ifndef APPLICATIONCONTROLLER_H
 #define APPLICATIONCONTROLLER_H
 
-#include <QObject>
-#include <QThread>
-#include <QSize>
-#include "VideoDisplay/VideoRender.h"
-#include <SpaceImpact.h>
+#include "Game/GameItem.h"
 
-class ApplicationController : public QThread
+enum MACHINE_STATE {
+    SHOW_MENU,
+    PLAYING_SPACE_IMPACT,
+    PLAYING_SNAKE,
+    PLAYING_TANK,
+    PLAYING_RACING
+};
+
+class ApplicationController
 {
-    Q_OBJECT
-    
 public:
-    explicit ApplicationController(QThread *parent = nullptr);
+    explicit ApplicationController();
     virtual ~ApplicationController();
     
+    int getScreenWidth();
+    int getScreenHeight();
+    unsigned char* getScreenData();
     void loop();
-    
-private:
-    void resetGame();
-public Q_SLOTS:
-    void setRender(VideoRender* render);
-    void renderFrame(unsigned char* frameData, int width, int height);
-    void startService();
-    void stopService();
-    void handleAxisChanged(int x, int y);
-    void handleBackPressed();
-    void handleEnterPressed();
-    void updateScreen();
-    
-Q_SIGNALS:
-    void readyToUpdate();
-private:
-    void run() override;
-    
-private:
-    bool m_stopped;
-    VideoRender* m_render = nullptr;
-    QSize m_frameSize;
+    void showMenu();
+    void playSpaceImpact();
+    void playSnake();
+    void playTank();
+    void playRacing();
+    virtual int printf(const char *fmt, ...) = 0;
+    virtual void msleep(int millis) = 0;
+
+protected:
+    MACHINE_STATE m_machineState;
+    int m_frameWidth;
+    int m_frameHeight;
     unsigned char m_frameData[33177600];
+    GameItem* m_gameList;
+    int m_currentGameID;
 };
 
 #endif // APPLICATIONCONTROLLER_H

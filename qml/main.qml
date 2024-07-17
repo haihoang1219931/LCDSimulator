@@ -59,10 +59,10 @@ Window {
     height: 720
     title: qsTr("ToyClawMachine")
     
-    ApplicationController {
-        id: application
+    MainProcess {
+        id: mainProcess
         onReadyToUpdate: {
-            application.updateScreen();
+            mainProcess.updateScreen();
         }
     }
     
@@ -73,10 +73,10 @@ Window {
         text: "Right"
         font.pointSize: 12
         onPressed: {
-            application.handleAxisChanged(1,0);
+            mainProcess.handleAxisChanged(1,0);
         }
         onReleased: {
-            application.handleAxisChanged(0,0);
+            mainProcess.handleAxisChanged(0,0);
         }
     }
     Button{
@@ -86,10 +86,10 @@ Window {
         text: "Left"
         font.pointSize: 12
         onPressed: {
-            application.handleAxisChanged(-1,0);
+            mainProcess.handleAxisChanged(-1,0);
         }
         onReleased: {
-            application.handleAxisChanged(0,0);
+            mainProcess.handleAxisChanged(0,0);
         }
     }
     Button{
@@ -99,10 +99,10 @@ Window {
         text: "Down"
         font.pointSize: 12
         onPressed: {
-            application.handleAxisChanged(0,1);
+            mainProcess.handleAxisChanged(0,1);
         }
         onReleased: {
-            application.handleAxisChanged(0,0);
+            mainProcess.handleAxisChanged(0,0);
         }
     }
     Button{
@@ -112,10 +112,10 @@ Window {
         text: "Up"
         font.pointSize: 12
         onPressed: {
-            application.handleAxisChanged(0,-1);
+            mainProcess.handleAxisChanged(0,-1);
         }
         onReleased: {
-            application.handleAxisChanged(0,0);
+            mainProcess.handleAxisChanged(0,0);
         }
     }
     
@@ -128,7 +128,7 @@ Window {
         text: "Back"
         font.pointSize: 12
         onClicked: {
-            application.handleBackPressed();
+            mainProcess.handleBackPressed();
         }
     }
     Button {
@@ -140,7 +140,7 @@ Window {
         text: "Enter"
         font.pointSize: 12
         onClicked: {
-            application.handleEnterPressed();
+            mainProcess.handleEnterPressed();
         }
     }
     Rectangle {
@@ -181,13 +181,8 @@ Window {
     }
     
     Component.onCompleted: {
-        application.setRender(videoRender);
-        application.startService();
+        mainProcess.setRender(videoRender);
+        mainProcess.startService();
     }
 }
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.75}
-}
-##^##*/
