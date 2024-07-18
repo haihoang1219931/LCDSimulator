@@ -14,7 +14,10 @@ SOURCES += main.cpp  \
     Game/GameItem.cpp \
     ApplicationSim.cpp \
     MainProcess.cpp \
-    LCDLibrary.cpp
+    LCDLibrary.cpp \
+    Game/GameMenu.cpp \
+    MainMenu.cpp \
+    Button.cpp
 
 
 HEADERS += \
@@ -24,7 +27,10 @@ HEADERS += \
     Game/GameItem.h \
     ApplicationSim.h \
     MainProcess.h \
-    LCDLibrary.h
+    LCDLibrary.h \
+    Game/GameMenu.h \
+    MainMenu.h \
+    Button.h
 
 game {
 SOURCES += \

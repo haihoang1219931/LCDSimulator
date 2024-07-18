@@ -3,7 +3,10 @@
 ApplicationSim::ApplicationSim(MainProcess* mainProcess)
 {
     m_mainProcess = mainProcess;
-    m_machineState = MACHINE_STATE::SHOW_MENU;
+    m_machineState = MACHINE_STATE::MACHINE_SHOW_MENU;
+}
+bool ApplicationSim::isButtonPressed(BUTTON_ID buttonID) {
+    return false;
 }
 int ApplicationSim::printf(const char *fmt, ...) {
     char buffer[256];

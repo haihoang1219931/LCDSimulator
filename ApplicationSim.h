@@ -11,6 +11,7 @@ class ApplicationSim : public ApplicationController
 {
 public:
     ApplicationSim(MainProcess* m_mainProcess);
+    bool isButtonPressed(BUTTON_ID buttonID) override;
     int printf(const char *fmt, ...) override;
     void msleep(int millis) override;
 private:

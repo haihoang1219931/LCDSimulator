@@ -1,16 +1,22 @@
 #ifndef APPLICATIONCONTROLLER_H
 #define APPLICATIONCONTROLLER_H
 
-#include "Game/GameItem.h"
+#include "MainMenu.h"
+#include "Game/GameMenu.h"
 
 enum MACHINE_STATE {
-    SHOW_MENU,
-    PLAYING_SPACE_IMPACT,
-    PLAYING_SNAKE,
-    PLAYING_TANK,
-    PLAYING_RACING
+    MACHINE_SHOW_MENU,
+    MACHINE_ENTER_GAME,
+    MACHINE_ENTER_MESSAGE,
+    MACHINE_ENTER_CALL,
 };
 
+enum BUTTON_ID {
+    BTN_UP,
+    BTN_DOWN,
+    BTN_LEFT,
+    BTN_RIGHT,
+};
 class ApplicationController
 {
 public:
@@ -21,11 +27,7 @@ public:
     int getScreenHeight();
     unsigned char* getScreenData();
     void loop();
-    void showMenu();
-    void playSpaceImpact();
-    void playSnake();
-    void playTank();
-    void playRacing();
+    virtual bool isButtonPressed(BUTTON_ID buttonID) = 0;
     virtual int printf(const char *fmt, ...) = 0;
     virtual void msleep(int millis) = 0;
 
@@ -34,7 +36,8 @@ protected:
     int m_frameWidth;
     int m_frameHeight;
     unsigned char m_frameData[33177600];
-    GameItem* m_gameList;
+    MainMenu* m_mainMenu;
+    GameMenu* m_gameMenu;
     int m_currentGameID;
 };
 

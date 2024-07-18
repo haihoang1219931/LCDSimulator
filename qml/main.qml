@@ -57,7 +57,7 @@ Window {
     visible: true
     width: 720
     height: 720
-    title: qsTr("ToyClawMachine")
+    title: qsTr("Gameboy")
     
     MainProcess {
         id: mainProcess

@@ -117,6 +117,12 @@ public:
                          const unsigned char** fonts, char character, int posX, int posY);
     static void drawString(unsigned char* display, int displayWidth, int displayHeight,
                          const unsigned char** fonts, const char* data, int posX, int posY);
+    static void drawLine(unsigned char* display, int displayWidth, int displayHeight,
+                         int startX, int startY, int endX, int endY);
+    static void drawRect(unsigned char* display, int displayWidth, int displayHeight,
+                         int posX, int posY, int rectWidth, int rectHeight, bool fill = false);
+    static void drawOval(unsigned char* display, int displayWidth, int displayHeight,
+                           int posX, int posY, int ovalWidth, int ovalHeight);
 };
 
 #endif // LCDLIBRARY_H
