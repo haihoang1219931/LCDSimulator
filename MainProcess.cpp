@@ -1,5 +1,6 @@
 #include "MainProcess.h"
 #include "LCDLibrary.h"
+
 MainProcess::MainProcess(QThread *parent) :
     QThread(parent),
     m_thread(nullptr),
@@ -65,6 +66,9 @@ void MainProcess::updateScreen() {
         m_render->handleNewFrame(m_renderData, width, height);
     }
 }
-
+void MainProcess::handleButtonPressed(int buttonID, bool pressed) {
+//    printf("BTN[%d] [%s]\r\n",buttonID,pressed?"PRESSED":"RELEASED");
+    m_application->updateButtonState((BUTTON_ID)buttonID, pressed);
+}
 
 

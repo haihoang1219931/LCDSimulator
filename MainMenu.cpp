@@ -1,23 +1,33 @@
 #include "MainMenu.h"
 #include "ApplicationController.h"
 #include "LCDLibrary.h"
+
+// Link to convert bitmap https://mischianti.org/images-to-byte-array-online-converter-cpp-arduino/
 MainMenu::MainMenu(ApplicationController* app)
 {
     m_app = app;
     m_currentID = MENU_MESSAGE;
 }
 void MainMenu::loop() {
+    int currentID = m_currentID;
     // check input
+    m_app->checkAllButtonState();
     if(m_app->isButtonPressed(BUTTON_ID::BTN_LEFT)){
-        if(m_currentID + 1 < MENU_ID::MENU_MAX) {
-            m_currentID ++;
-        }
-    } else if(m_app->isButtonPressed(BUTTON_ID::BTN_RIGHT)){
-        if(m_currentID - 1 > MENU_ID::MENU_MIN) {
-            m_currentID --;
+        currentID ++;
+        if(currentID + 1 >= MENU_ID::MENU_MAX) {
+            currentID = MENU_ID::MENU_MESSAGE;
         }
     }
-    
+//    else if(m_app->isButtonPressed(BUTTON_ID::BTN_RIGHT)){
+//        if(currentID - 1 > MENU_ID::MENU_MIN) {
+//            currentID --;
+//        }
+//    }
+    if(currentID != m_currentID) {
+        // clear display
+        LCDLibrary::clear(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),0x00);
+    }
+
     // draw main
     switch ((MENU_ID)m_currentID) {
     case MENU_MESSAGE:
@@ -26,82 +36,70 @@ void MainMenu::loop() {
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                     (const unsigned char**)fonts58,"MESSAGE",
                     m_app->getScreenWidth() / 2 - strlen("MESSAGE")*9/2 ,3);
+        unsigned char object[] = {
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x07,
+                0xf0, 0x00, 0x00, 0x0f, 0xd8, 0x00, 0x00, 0x1b, 0xc6, 0x00, 0x00, 0x63, 0xc3, 0x00, 0x00, 0xc3,
+                0xc1, 0x80, 0x01, 0x83, 0xc0, 0x60, 0x06, 0x03, 0xc0, 0x30, 0x0c, 0x03, 0xc0, 0x18, 0x18, 0x03,
+                0xc0, 0x34, 0x64, 0x03, 0xc0, 0x63, 0xc2, 0x03, 0xc0, 0x81, 0x81, 0x83, 0xc1, 0x00, 0x00, 0xc3,
+                0xc2, 0x00, 0x00, 0x63, 0xcc, 0x00, 0x00, 0x33, 0xd8, 0x00, 0x00, 0x1b, 0xf0, 0x00, 0x00, 0x0f,
+                0xe0, 0x00, 0x00, 0x03, 0xff, 0xff, 0xff, 0xff, 0x7f, 0xff, 0xff, 0xfe, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
     }
         break;
     case MENU_CALL:
+    {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                     (const unsigned char**)fonts58,"CALL",
                     m_app->getScreenWidth() / 2 - strlen("CALL")*9/2 ,3);
+        unsigned char object[] = {
+        0x07, 0x00, 0x00, 0x00, 0x0f, 0x80, 0x00, 0x00, 0x1f, 0xc0, 0x00, 0x00, 0x3f, 0xe0, 0x00, 0x00,
+            0x7f, 0xf0, 0x00, 0x00, 0xff, 0xf8, 0x00, 0x00, 0xff, 0xfc, 0x00, 0x00, 0xff, 0xfc, 0x00, 0x00,
+            0xff, 0xfc, 0x00, 0x00, 0xff, 0xf8, 0x00, 0x00, 0x7f, 0xe0, 0x00, 0x00, 0x7f, 0xc0, 0x00, 0x00,
+            0x7f, 0xc0, 0x00, 0x00, 0x3f, 0xc0, 0x00, 0x00, 0x3f, 0xc0, 0x00, 0x00, 0x1f, 0xe0, 0x00, 0x00,
+            0x0f, 0xe0, 0x00, 0x00, 0x0f, 0xf0, 0x00, 0x00, 0x07, 0xf8, 0x01, 0xc0, 0x03, 0xfc, 0x03, 0xe0,
+            0x01, 0xfe, 0x03, 0xf0, 0x00, 0xff, 0x87, 0xf8, 0x00, 0xff, 0xff, 0xfc, 0x00, 0x7f, 0xff, 0xfe,
+            0x00, 0x1f, 0xff, 0xff, 0x00, 0x0f, 0xff, 0xff, 0x00, 0x07, 0xff, 0xff, 0x00, 0x03, 0xff, 0xfe,
+            0x00, 0x00, 0xff, 0xfc, 0x00, 0x00, 0x7f, 0xf8, 0x00, 0x00, 0x1f, 0xf0, 0x00, 0x00, 0x03, 0xe0
+        };
+
+        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
+    }
         break;
     case MENU_GAME:
+    {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                     (const unsigned char**)fonts58,"GAME",
                     m_app->getScreenWidth() / 2 - strlen("GAME")*9/2 ,3);
+        unsigned char object[] = {
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x03, 0x00, 0x07, 0xf8, 0x1f, 0xe0, 0x0f, 0xfe, 0x7f, 0xf0,
+                0x1f, 0xff, 0xff, 0xf8, 0x1f, 0xff, 0xf9, 0xf8, 0x3f, 0x3f, 0xf8, 0xfc, 0x3f, 0x3f, 0xf8, 0xfc,
+                0x7e, 0x3f, 0xff, 0x8e, 0x78, 0x0f, 0xff, 0x8e, 0x7c, 0x0f, 0xf8, 0x8e, 0xff, 0x3f, 0xf8, 0xff,
+                0xff, 0x3f, 0xf8, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+                0xff, 0xff, 0xff, 0xff, 0xff, 0x80, 0x01, 0xff, 0xff, 0x80, 0x01, 0xff, 0xff, 0x00, 0x00, 0xff,
+                0x7e, 0x00, 0x00, 0x7e, 0x78, 0x00, 0x00, 0x1e, 0x30, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
+    }
         break;
     }
 
-    // draw navigation left button
-//    {
-//        unsigned char object[200] = {
-//            000,000,000,000,000,000,000,000,000,255,
-//            000,000,000,000,000,000,000,000,255,255,
-//            000,000,000,000,000,000,000,255,255,255,
-//            000,000,000,000,000,000,255,255,255,255,
-//            000,000,000,000,000,255,255,255,255,255,
-//            000,000,000,000,255,255,255,255,255,255,
-//            000,000,000,255,255,255,255,255,255,255,
-//            000,000,255,255,255,255,255,255,255,255,
-//            000,255,255,255,255,255,255,255,255,255,
-//            255,255,255,255,255,255,255,255,255,255,
-//            255,255,255,255,255,255,255,255,255,255,
-//            000,255,255,255,255,255,255,255,255,255,
-//            000,000,255,255,255,255,255,255,255,255,
-//            000,000,000,255,255,255,255,255,255,255,
-//            000,000,000,000,255,255,255,255,255,255,
-//            000,000,000,000,000,255,255,255,255,255,
-//            000,000,000,000,000,000,255,255,255,255,
-//            000,000,000,000,000,000,000,255,255,255,
-//            000,000,000,000,000,000,000,000,255,255,
-//            000,000,000,000,000,000,000,000,000,255,
-//        };
+    // sleep
+//    m_currentID ++;
+//    if(m_currentID + 1 >= MENU_ID::MENU_MAX) m_currentID = MENU_ID::MENU_MESSAGE;
 
-//        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-//                               object,10,20,10,m_app->getScreenHeight()/2 - 20/2);
-//    }
-
-    // draw navigation right button
-//    {
-//        unsigned char object[200] = {
-//            255,000,000,000,000,000,000,000,000,000,
-//            255,255,000,000,000,000,000,000,000,000,
-//            255,255,255,000,000,000,000,000,000,000,
-//            255,255,255,255,000,000,000,000,000,000,
-//            255,255,255,255,255,000,000,000,000,000,
-//            255,255,255,255,255,255,000,000,000,000,
-//            255,255,255,255,255,255,255,000,000,000,
-//            255,255,255,255,255,255,255,255,000,000,
-//            255,255,255,255,255,255,255,255,255,000,
-//            255,255,255,255,255,255,255,255,255,255,
-//            255,255,255,255,255,255,255,255,255,255,
-//            255,255,255,255,255,255,255,255,255,000,
-//            255,255,255,255,255,255,255,255,000,000,
-//            255,255,255,255,255,255,255,000,000,000,
-//            255,255,255,255,255,255,000,000,000,000,
-//            255,255,255,255,255,000,000,000,000,000,
-//            255,255,255,255,000,000,000,000,000,000,
-//            255,255,255,000,000,000,000,000,000,000,
-//            255,255,000,000,000,000,000,000,000,000,
-//            255,000,000,000,000,000,000,000,000,000,
-
-//        };
-
-//        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-//                               object,10,20,m_app->getScreenWidth()-10-10,m_app->getScreenHeight()/2 - 20/2);
-//    }
-
-
+//    m_app->msleep(1000);
 }
 
 void MainMenu::draw() {

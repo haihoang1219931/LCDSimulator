@@ -3,7 +3,7 @@
 
 #include "MainMenu.h"
 #include "Game/GameMenu.h"
-
+class Button;
 enum MACHINE_STATE {
     MACHINE_SHOW_MENU,
     MACHINE_ENTER_GAME,
@@ -16,6 +16,9 @@ enum BUTTON_ID {
     BTN_DOWN,
     BTN_LEFT,
     BTN_RIGHT,
+    BTN_ENTER,
+    BTN_BACK,
+    BTN_MAX,
 };
 class ApplicationController
 {
@@ -27,9 +30,11 @@ public:
     int getScreenHeight();
     unsigned char* getScreenData();
     void loop();
-    virtual bool isButtonPressed(BUTTON_ID buttonID) = 0;
+    void checkAllButtonState();
+    bool isButtonPressed(BUTTON_ID buttonID);
     virtual int printf(const char *fmt, ...) = 0;
     virtual void msleep(int millis) = 0;
+    virtual long getSystemTimeInMillis() = 0;
 
 protected:
     MACHINE_STATE m_machineState;
@@ -38,7 +43,7 @@ protected:
     unsigned char m_frameData[2048]; // 128x128 bit
     MainMenu* m_mainMenu;
     GameMenu* m_gameMenu;
-    int m_currentGameID;
+    Button* m_listButton[BUTTON_ID::BTN_MAX];
 };
 
 #endif // APPLICATIONCONTROLLER_H

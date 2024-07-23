@@ -28,11 +28,26 @@ void copyShiftArray(unsigned char* dest, int destLen, unsigned char* src, int sr
 #endif
 }
 
+void LCDLibrary::clear(unsigned char* display, int displayWidth, int displayHeight,
+                       unsigned char value) {
+    memset((void*)display,value,displayWidth*displayHeight/8);
+}
+
+void LCDLibrary::drawPixel(unsigned char* display, int displayWidth, int displayHeight,
+                           unsigned char value, int posX, int posY) {
+    display[(posY*displayWidth+posX)/8] = display[(posY*displayWidth+posX)/8] | (value << (7-posX%8));
+}
 void LCDLibrary::drawObject(unsigned char* display, int displayWidth, int displayHeight,
                             unsigned char* object, int objectWidth, int objectHeight,
                             int posX, int posY) {
+//    for(int row = 0; row < objectHeight; row ++) {
+//        for(int col = 0; col < objectWidth / 8; col ++){
+//            printf(BYTE_TO_BINARY_PATTERN "",BYTE_TO_BINARY(object[row*objectWidth/8+col]));
+//        }
+//        printf("\r\n");
+//    }
     for(int row = 0; row < objectHeight; row ++) {
-        copyShiftArray(&display[(posY+row)*displayWidth/8],displayWidth/8,(unsigned char*)&object[row],objectWidth/8,posX);
+        copyShiftArray(&display[(posY+row)*displayWidth/8],displayWidth/8,(unsigned char*)&object[row*objectWidth/8],objectWidth/8,posX);
     }
 }
 

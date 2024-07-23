@@ -1,17 +1,18 @@
 #include "ApplicationController.h"
 #include <memory.h>
 #include "LCDLibrary.h"
+#include "Button.h"
 ApplicationController::ApplicationController()
 {
     m_frameWidth = 128;
     m_frameHeight = 64;
     m_mainMenu = new MainMenu(this);
     m_gameMenu = new GameMenu(this);
-    memset(m_frameData,0,sizeof(m_frameData));
-//    LCDLibrary::drawString(
-//                getScreenData(),getScreenWidth(),getScreenHeight(),
-//                (const unsigned char**)fonts58,"HELLO WORLD",
-//                getScreenWidth()/2-strlen("HELLO WORLD")*9/2, 0);
+    memset(m_frameData,0x00,sizeof(m_frameData));
+    for(int i=0;i< BUTTON_ID::BTN_MAX; i++) {
+        m_listButton[i] = new Button(this,i);
+    }
+    ::printf("ApplicationController constructor\r\n");
 }
 
 ApplicationController::~ApplicationController() {
@@ -28,6 +29,16 @@ void ApplicationController::loop() {
             break;
     }
 
+}
+
+void ApplicationController::checkAllButtonState() {
+    for(int i=0;i< BUTTON_ID::BTN_MAX; i++) {
+        m_listButton[i]->checkState();
+    }
+}
+
+bool ApplicationController::isButtonPressed(BUTTON_ID buttonID) {
+    return m_listButton[buttonID]->isPressed();
 }
 int ApplicationController::getScreenWidth() {
     return m_frameWidth;

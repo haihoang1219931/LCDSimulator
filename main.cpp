@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<VideoRender>("diy", 1, 0, "VideoRender");
     qmlRegisterType<MainProcess>("diy", 1, 0, "MainProcess");
+    qmlRegisterUncreatableType<ButtonClass>("diy", 1, 0, "ButtonClass",
+                                            "Not creatable as it is an enum type.");
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
             return -1;

@@ -73,10 +73,10 @@ Window {
         text: "Right"
         font.pointSize: 12
         onPressed: {
-            mainProcess.handleAxisChanged(1,0);
+            mainProcess.handleButtonPressed(3,true);
         }
         onReleased: {
-            mainProcess.handleAxisChanged(0,0);
+            mainProcess.handleButtonPressed(3,false);
         }
     }
     Button{
@@ -86,10 +86,10 @@ Window {
         text: "Left"
         font.pointSize: 12
         onPressed: {
-            mainProcess.handleAxisChanged(-1,0);
+            mainProcess.handleButtonPressed(2,true);
         }
         onReleased: {
-            mainProcess.handleAxisChanged(0,0);
+            mainProcess.handleButtonPressed(2,false);
         }
     }
     Button{
@@ -99,10 +99,10 @@ Window {
         text: "Down"
         font.pointSize: 12
         onPressed: {
-            mainProcess.handleAxisChanged(0,1);
+            mainProcess.handleButtonPressed(1,true);
         }
         onReleased: {
-            mainProcess.handleAxisChanged(0,0);
+            mainProcess.handleButtonPressed(1,false);
         }
     }
     Button{
@@ -112,10 +112,10 @@ Window {
         text: "Up"
         font.pointSize: 12
         onPressed: {
-            mainProcess.handleAxisChanged(0,-1);
+            mainProcess.handleButtonPressed(0,true);
         }
         onReleased: {
-            mainProcess.handleAxisChanged(0,0);
+            mainProcess.handleButtonPressed(0,false);
         }
     }
     
@@ -127,8 +127,11 @@ Window {
         height: 101
         text: "Back"
         font.pointSize: 12
-        onClicked: {
-            mainProcess.handleBackPressed();
+        onPressed: {
+            mainProcess.handleButtonPressed(5,true);
+        }
+        onReleased: {
+            mainProcess.handleButtonPressed(5,false);
         }
     }
     Button {
@@ -139,8 +142,11 @@ Window {
         height: 101
         text: "Enter"
         font.pointSize: 12
-        onClicked: {
-            mainProcess.handleEnterPressed();
+        onPressed: {
+            mainProcess.handleButtonPressed(4,true);
+        }
+        onReleased: {
+            mainProcess.handleButtonPressed(4,false);
         }
     }
     Rectangle {

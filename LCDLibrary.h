@@ -119,6 +119,10 @@ const unsigned char openGLletters[95][13] = {
 class LCDLibrary
 {
 public:
+    static void clear(unsigned char* display, int displayWidth, int displayHeight,
+                               unsigned char value = 0x00);
+    static void drawPixel(unsigned char* display, int displayWidth, int displayHeight,
+                               unsigned char value,int posX, int posY);
     static void drawObject(unsigned char* display, int displayWidth, int displayHeight,
                     unsigned char* object, int objectWidth, int objectHeight,
                            int posX, int posY);
