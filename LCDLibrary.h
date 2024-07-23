@@ -2,7 +2,16 @@
 #define LCDLIBRARY_H
 #include <stdio.h>
 #include <string.h>
-
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  ((byte) & 0x80 ? '1' : '0'), \
+  ((byte) & 0x40 ? '1' : '0'), \
+  ((byte) & 0x20 ? '1' : '0'), \
+  ((byte) & 0x10 ? '1' : '0'), \
+  ((byte) & 0x08 ? '1' : '0'), \
+  ((byte) & 0x04 ? '1' : '0'), \
+  ((byte) & 0x02 ? '1' : '0'), \
+  ((byte) & 0x01 ? '1' : '0') 
 const unsigned char fonts58[96][10] = {
     {5 , 8, 0b01110, 0b10001, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b00000}, // 'A'
     {5 , 8, 0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110, 0b00000}, // 'B'

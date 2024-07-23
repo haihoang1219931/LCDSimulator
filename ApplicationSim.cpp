@@ -24,7 +24,7 @@ void ApplicationSim::msleep(int millis) {
     nanosleep(&ts, NULL);
 #elif _WIN32
     // windows code goes here
-    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+    std::this_thread::sleep_for(std::chrono::milliseconds(millis));
 #else
 #endif
 }

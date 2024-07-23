@@ -35,7 +35,7 @@ protected:
     MACHINE_STATE m_machineState;
     int m_frameWidth;
     int m_frameHeight;
-    unsigned char m_frameData[33177600];
+    unsigned char m_frameData[2048]; // 128x128 bit
     MainMenu* m_mainMenu;
     GameMenu* m_gameMenu;
     int m_currentGameID;

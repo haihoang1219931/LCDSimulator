@@ -1,5 +1,5 @@
 #include "MainProcess.h"
-#include <unistd.h>
+#include "LCDLibrary.h"
 MainProcess::MainProcess(QThread *parent) :
     QThread(parent),
     m_thread(nullptr),
@@ -7,6 +7,7 @@ MainProcess::MainProcess(QThread *parent) :
 
 {
     m_application = new ApplicationSim(this);
+    memset(m_renderData,0,sizeof(m_renderData));
 }
 
 MainProcess::~MainProcess()
@@ -39,10 +40,29 @@ void MainProcess::setRender(VideoRender* render)
 void MainProcess::updateScreen() {
     if(m_render != nullptr)
     {
-        m_render->handleNewFrame(
-                    m_application->getScreenData(),
-                    m_application->getScreenWidth(),
-                    m_application->getScreenHeight());
+        int width = m_application->getScreenWidth();
+        int height = m_application->getScreenHeight();
+        unsigned char* binaryFrame = m_application->getScreenData();
+//        printf("BinaryFrame:\r\n");
+//        for(int row = 0; row < height; row++) {
+//            for(int col = 0; col < width/8; col ++) {
+//                printf(BYTE_TO_BINARY_PATTERN "",BYTE_TO_BINARY (binaryFrame[row*width/8+col]));
+//            }
+//            printf("\r\n");
+//        }
+//        printf("\r\n");
+//        printf("RenderFrame:\r\n");
+        for(int row = 0; row < height; row++) {
+            for(int col = 0; col < width/8; col ++) {
+                for(int bit = 0; bit <8; bit++){
+                    m_renderData[row*width+col*8+bit] = 
+                            (binaryFrame[row*width/8+col] & (0x01 << (7-bit))) == 0 ? 0 : 0xFF;
+                }
+                
+            }
+//            printf("\r\n");
+        }
+        m_render->handleNewFrame(m_renderData, width, height);
     }
 }
 
