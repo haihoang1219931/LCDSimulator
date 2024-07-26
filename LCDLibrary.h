@@ -12,12 +12,6 @@
   ((byte) & 0x04 ? '1' : '0'), \
   ((byte) & 0x02 ? '1' : '0'), \
   ((byte) & 0x01 ? '1' : '0') 
-const unsigned char fonts58[96][10] = {
-    {5 , 8, 0b01110, 0b10001, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b00000}, // 'A'
-    {5 , 8, 0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110, 0b00000}, // 'B'
-    {5 , 8, 0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110, 0b00000}, // 'C'
-
-};
 
 const unsigned char openGLletters[95][13] = {
 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
@@ -131,11 +125,11 @@ public:
     static void drawString(unsigned char* display, int displayWidth, int displayHeight,
                          const unsigned char** fonts, const char* data, int posX, int posY);
     static void drawLine(unsigned char* display, int displayWidth, int displayHeight,
-                         int startX, int startY, int endX, int endY);
+                         int startX, int startY, int endX, int endY, int thickness);
     static void drawRect(unsigned char* display, int displayWidth, int displayHeight,
                          int posX, int posY, int rectWidth, int rectHeight, bool fill = false);
     static void drawOval(unsigned char* display, int displayWidth, int displayHeight,
-                           int posX, int posY, int ovalWidth, int ovalHeight);
+                           int posX, int posY, int ovalWidth, int ovalHeight, bool fill = false);
 };
 
 #endif // LCDLIBRARY_H

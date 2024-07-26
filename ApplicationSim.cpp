@@ -1,6 +1,12 @@
 #include "ApplicationSim.h"
+
+#ifdef __linux__
 #include <sys/time.h>
 #include <unistd.h>
+#elif _WIN32
+#include <time.h>
+#else
+#endif
 #include "Button.h"
 
 ApplicationSim::ApplicationSim(MainProcess* mainProcess)
@@ -31,9 +37,16 @@ void ApplicationSim::msleep(int millis) {
 }
 
 long ApplicationSim::getSystemTimeInMillis() {
+#ifdef __linux__
     struct timeval curTime;
     gettimeofday(&curTime, NULL);
     return (curTime.tv_usec/1000 + curTime.tv_sec*1000);
+#elif _WIN32
+    clock_t curTime = clock();
+    return curTime * (1000.0 / CLOCKS_PER_SEC);
+#else
+    return 0;
+#endif
 }
 
 void ApplicationSim::updateButtonState(BUTTON_ID btnID, bool pressed) {

@@ -37,8 +37,8 @@ void ApplicationController::checkAllButtonState() {
     }
 }
 
-bool ApplicationController::isButtonPressed(BUTTON_ID buttonID) {
-    return m_listButton[buttonID]->isPressed();
+int ApplicationController::buttonState(BUTTON_ID buttonID) {
+    return m_listButton[buttonID]->buttonState();
 }
 int ApplicationController::getScreenWidth() {
     return m_frameWidth;

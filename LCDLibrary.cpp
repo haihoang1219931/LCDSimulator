@@ -8,26 +8,21 @@ void copyShiftArray(unsigned char* dest, int destLen, unsigned char* src, int sr
     for(int i=0;i <= copyBits / 8; i++) {
         if(i == 0) {
             dest[pos/8+i] = (dest[pos/8+i] & (0xFF << (8 - rShift))) | (src[i] >> rShift);
-#ifdef DEBUG
-            printf("dest[%04d]" BYTE_TO_BINARY_PATTERN "from " 
-                    "src[%04d]" BYTE_TO_BINARY_PATTERN "\r\n",
-                   pos/8+i,BYTE_TO_BINARY(dest[pos/8+i]),i,BYTE_TO_BINARY(src[i]));
-#endif
         }
         else {
             dest[pos/8+i] = (i < srcLen?src[i]>>rShift : (dest[pos/8+i] & (0xFF >> rShift))) | (src[i-1] << (8-rShift));
-#ifdef DEBUG
-            printf("dest[%04d]" BYTE_TO_BINARY_PATTERN "from " 
-                    "src[%04d]" BYTE_TO_BINARY_PATTERN "\r\n",
-                   pos/8+i,BYTE_TO_BINARY(dest[pos/8+i]),i-1,BYTE_TO_BINARY(src[i-1]));
-#endif
         }
     }
-#ifdef DEBUG
-    printf("copyBits[%03d]: ",copyBits);
-#endif
 }
-
+void printObject(unsigned char * object, int width, int height){
+    for(int row = 0; row < height; row ++) {
+        for(int col = 0; col < width / 8; col ++) {
+            printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(object[row*width/8+col]));
+        }
+        printf("\r\n");
+    }
+    printf("\r\n");
+}
 void LCDLibrary::clear(unsigned char* display, int displayWidth, int displayHeight,
                        unsigned char value) {
     memset((void*)display,value,displayWidth*displayHeight/8);
@@ -40,12 +35,6 @@ void LCDLibrary::drawPixel(unsigned char* display, int displayWidth, int display
 void LCDLibrary::drawObject(unsigned char* display, int displayWidth, int displayHeight,
                             unsigned char* object, int objectWidth, int objectHeight,
                             int posX, int posY) {
-//    for(int row = 0; row < objectHeight; row ++) {
-//        for(int col = 0; col < objectWidth / 8; col ++){
-//            printf(BYTE_TO_BINARY_PATTERN "",BYTE_TO_BINARY(object[row*objectWidth/8+col]));
-//        }
-//        printf("\r\n");
-//    }
     for(int row = 0; row < objectHeight; row ++) {
         copyShiftArray(&display[(posY+row)*displayWidth/8],displayWidth/8,(unsigned char*)&object[row*objectWidth/8],objectWidth/8,posX);
     }
@@ -60,17 +49,6 @@ void LCDLibrary::drawChar(unsigned char* display, int displayWidth, int displayH
     for(int row = 0; row < objectHeight; row ++) {
         copyShiftArray(&display[(posY+row)*displayWidth/8],displayWidth/8,(unsigned char*)&characterData[objectHeight - 1 -row],objectWidth/8,posX);
     }
-//    unsigned char data[32]; //16x16 bit
-//    memset(data,0,sizeof(data));
-//    for(int row = 0; row < objectHeight; row ++) {
-//        printf(BYTE_TO_BINARY_PATTERN "\r\n",BYTE_TO_BINARY(characterData[row]));
-//        copyShiftArray(&data[(0+row)*16/8],16/8,(unsigned char*)&characterData[row],1,0);
-//    }
-//    for(int i=0;i<displayHeight;i++){
-//        for(int j=0; j<displayWidth/8; j++)
-//            printf(BYTE_TO_BINARY_PATTERN,BYTE_TO_BINARY(display[i*2+j]));
-//        printf("\r\n");
-//    }
     
 }
 void LCDLibrary::drawString(unsigned char* display, int displayWidth, int displayHeight,
@@ -78,4 +56,44 @@ void LCDLibrary::drawString(unsigned char* display, int displayWidth, int displa
     for(int i =0; i< strlen(data); i++) {
         drawChar(display,displayWidth,displayHeight,fonts,data[i],posX+i*(8+1),posY);
     }
+}
+void LCDLibrary::drawLine(unsigned char* display, int displayWidth, int displayHeight,
+                          int startX, int startY, int endX, int endY, int thickness) {
+    
+}
+void LCDLibrary::drawRect(unsigned char* display, int displayWidth, int displayHeight,
+                          int posX, int posY, int rectWidth, int rectHeight, bool fill) {
+    int rectWidthRemainder = 8 - rectWidth % 8;
+    int roundRectWidth = (rectWidth + rectWidthRemainder);
+    unsigned char* rect = new unsigned char[rectHeight*(roundRectWidth/8)];
+    if(fill) {
+        memset(rect,0xFF,rectHeight*(roundRectWidth/8));
+        if(rectWidthRemainder != 0) {
+            int lShift = rectWidthRemainder;
+            for(int row = 0; row < rectHeight; row ++) {
+                rect[(row+1) * roundRectWidth/8 - 1] &= 0xFF << lShift;
+            }
+        }
+    } else {
+        memset(rect,0x00,rectHeight*(roundRectWidth/8));
+//        if(rectWidthRemainder != 0) 
+        {
+            int lShift = rectWidthRemainder;
+            for(int row = 1; row < rectHeight-1; row ++) {
+                rect[(row+1) * roundRectWidth/8 - 1] |= 0x01 << lShift;
+                rect[row*roundRectWidth/8] |= 0x80;
+            }
+            memset(rect,0xFF,roundRectWidth/8);
+            rect[roundRectWidth/8-1] = 0xFF << lShift;
+            memset(&rect[(rectHeight-1)*roundRectWidth/8],0xFF,roundRectWidth/8);
+            rect[rectHeight*roundRectWidth/8-1] = 0xFF << lShift;
+//            printObject(rect,roundRectWidth,rectHeight);
+        }
+    }
+    drawObject(display,displayWidth,displayHeight,rect,roundRectWidth,rectHeight,posX,posY);
+    delete[] rect;
+}
+void LCDLibrary::drawOval(unsigned char* display, int displayWidth, int displayHeight,
+                          int posX, int posY, int ovalWidth, int ovalHeight, bool fill) {
+    
 }

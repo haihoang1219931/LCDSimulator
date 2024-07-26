@@ -31,7 +31,7 @@ public:
     unsigned char* getScreenData();
     void loop();
     void checkAllButtonState();
-    bool isButtonPressed(BUTTON_ID buttonID);
+    int buttonState(BUTTON_ID buttonID);
     virtual int printf(const char *fmt, ...) = 0;
     virtual void msleep(int millis) = 0;
     virtual long getSystemTimeInMillis() = 0;

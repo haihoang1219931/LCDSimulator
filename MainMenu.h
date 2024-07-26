@@ -3,8 +3,9 @@
 
 enum MENU_ID {
     MENU_MIN,
-    MENU_MESSAGE,
     MENU_CALL,
+    MENU_MESSAGE,
+    MENU_CONTACTS,
     MENU_GAME,
     MENU_MAX,
 };
@@ -15,7 +16,9 @@ class MainMenu
 public:
     MainMenu(ApplicationController* app);
     void loop();
-    void draw();
+    void clearDisplay();
+    void drawMenu();
+    void drawScrollBar();
 private:
     ApplicationController* m_app;
     int m_currentID;

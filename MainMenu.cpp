@@ -1,7 +1,7 @@
 #include "MainMenu.h"
 #include "ApplicationController.h"
 #include "LCDLibrary.h"
-
+#include "Button.h"
 // Link to convert bitmap https://mischianti.org/images-to-byte-array-online-converter-cpp-arduino/
 MainMenu::MainMenu(ApplicationController* app)
 {
@@ -12,50 +12,39 @@ void MainMenu::loop() {
     int currentID = m_currentID;
     // check input
     m_app->checkAllButtonState();
-    if(m_app->isButtonPressed(BUTTON_ID::BTN_LEFT)){
+    if(m_app->buttonState(BUTTON_ID::BTN_RIGHT) == BUTTON_STATE::BUTTON_PRESS || 
+            m_app->buttonState(BUTTON_ID::BTN_DOWN) == BUTTON_STATE::BUTTON_PRESS){
         currentID ++;
-        if(currentID + 1 >= MENU_ID::MENU_MAX) {
-            currentID = MENU_ID::MENU_MESSAGE;
+        if(currentID >= MENU_ID::MENU_MAX) {
+            currentID = MENU_ID::MENU_MIN + 1;
         }
     }
-//    else if(m_app->isButtonPressed(BUTTON_ID::BTN_RIGHT)){
-//        if(currentID - 1 > MENU_ID::MENU_MIN) {
-//            currentID --;
-//        }
-//    }
+    else if(m_app->buttonState(BUTTON_ID::BTN_LEFT) == BUTTON_STATE::BUTTON_PRESS || 
+            m_app->buttonState(BUTTON_ID::BTN_UP) == BUTTON_STATE::BUTTON_PRESS){
+        currentID --;
+        if(currentID <= MENU_ID::MENU_MIN) {
+            currentID = MENU_ID::MENU_MAX - 1;
+        }
+    }
     if(currentID != m_currentID) {
-        // clear display
-        LCDLibrary::clear(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),0x00);
+        m_currentID = currentID;
+        clearDisplay();
     }
+    drawMenu();
+    drawScrollBar();
+}
 
-    // draw main
+void MainMenu::clearDisplay() {
+    LCDLibrary::clear(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),0x00);
+}
+void MainMenu::drawMenu() {
     switch ((MENU_ID)m_currentID) {
-    case MENU_MESSAGE:
-    {
-        LCDLibrary::drawString(
-                    m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-                    (const unsigned char**)fonts58,"MESSAGE",
-                    m_app->getScreenWidth() / 2 - strlen("MESSAGE")*9/2 ,3);
-        unsigned char object[] = {
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x07,
-                0xf0, 0x00, 0x00, 0x0f, 0xd8, 0x00, 0x00, 0x1b, 0xc6, 0x00, 0x00, 0x63, 0xc3, 0x00, 0x00, 0xc3,
-                0xc1, 0x80, 0x01, 0x83, 0xc0, 0x60, 0x06, 0x03, 0xc0, 0x30, 0x0c, 0x03, 0xc0, 0x18, 0x18, 0x03,
-                0xc0, 0x34, 0x64, 0x03, 0xc0, 0x63, 0xc2, 0x03, 0xc0, 0x81, 0x81, 0x83, 0xc1, 0x00, 0x00, 0xc3,
-                0xc2, 0x00, 0x00, 0x63, 0xcc, 0x00, 0x00, 0x33, 0xd8, 0x00, 0x00, 0x1b, 0xf0, 0x00, 0x00, 0x0f,
-                0xe0, 0x00, 0x00, 0x03, 0xff, 0xff, 0xff, 0xff, 0x7f, 0xff, 0xff, 0xfe, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-        };
-
-        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
-    }
         break;
     case MENU_CALL:
     {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-                    (const unsigned char**)fonts58,"CALL",
+                    (const unsigned char**)openGLletters,"CALL",
                     m_app->getScreenWidth() / 2 - strlen("CALL")*9/2 ,3);
         unsigned char object[] = {
         0x07, 0x00, 0x00, 0x00, 0x0f, 0x80, 0x00, 0x00, 0x1f, 0xc0, 0x00, 0x00, 0x3f, 0xe0, 0x00, 0x00,
@@ -72,11 +61,53 @@ void MainMenu::loop() {
                                object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
     }
         break;
+    case MENU_MESSAGE:
+    {
+        LCDLibrary::drawString(
+                    m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                    (const unsigned char**)openGLletters,"MESSAGE",
+                    m_app->getScreenWidth() / 2 - strlen("MESSAGE")*9/2 ,3);
+        unsigned char object[] = {
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x07,
+                0xf0, 0x00, 0x00, 0x0f, 0xd8, 0x00, 0x00, 0x1b, 0xc6, 0x00, 0x00, 0x63, 0xc3, 0x00, 0x00, 0xc3,
+                0xc1, 0x80, 0x01, 0x83, 0xc0, 0x60, 0x06, 0x03, 0xc0, 0x30, 0x0c, 0x03, 0xc0, 0x18, 0x18, 0x03,
+                0xc0, 0x34, 0x64, 0x03, 0xc0, 0x63, 0xc2, 0x03, 0xc0, 0x81, 0x81, 0x83, 0xc1, 0x00, 0x00, 0xc3,
+                0xc2, 0x00, 0x00, 0x63, 0xcc, 0x00, 0x00, 0x33, 0xd8, 0x00, 0x00, 0x1b, 0xf0, 0x00, 0x00, 0x0f,
+                0xe0, 0x00, 0x00, 0x03, 0xff, 0xff, 0xff, 0xff, 0x7f, 0xff, 0xff, 0xfe, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
+        break;
+    }
+    case MENU_CONTACTS:
+    {
+        LCDLibrary::drawString(
+                    m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                    (const unsigned char**)openGLletters,"CONTACTS",
+                    m_app->getScreenWidth() / 2 - strlen("CONTACTS")*9/2 ,3);
+        unsigned char object[] = {
+            0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe0, 0x03, 0xff, 0xff, 0xf8, 0x07, 0xff, 0xff, 0xfc, 
+                0x07, 0xff, 0xff, 0xfc, 0x0f, 0xff, 0xff, 0xfe, 0x00, 0xff, 0xff, 0xfe, 0x3e, 0xfc, 0xff, 0xfe, 
+                0x7e, 0xf0, 0x7f, 0xfe, 0x3e, 0xf0, 0x7f, 0xfe, 0x01, 0xe0, 0x3f, 0xfe, 0x0f, 0xe0, 0x3f, 0xfe, 
+                0x0f, 0xe0, 0x7f, 0xfe, 0x00, 0xe0, 0xff, 0xfe, 0x3e, 0xe1, 0xff, 0xfe, 0x7f, 0xf0, 0xff, 0xfe, 
+                0x3e, 0xf0, 0xff, 0xfe, 0x01, 0xf8, 0x7f, 0xfe, 0x0f, 0xfc, 0x3f, 0xfe, 0x03, 0xfc, 0x1c, 0x3e, 
+                0x00, 0xfe, 0x00, 0x1e, 0x3e, 0xff, 0x00, 0x0e, 0x7e, 0xff, 0x80, 0x0e, 0x3e, 0xff, 0xe0, 0x1e, 
+                0x01, 0xff, 0xf8, 0x7e, 0x0f, 0xff, 0xff, 0xfe, 0x0f, 0xff, 0xff, 0xfe, 0x07, 0xff, 0xff, 0xfc, 
+                0x07, 0xff, 0xff, 0xfc, 0x03, 0xff, 0xff, 0xf8, 0x00, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00
+        };
+
+        LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                               object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
+        break;
+    }
     case MENU_GAME:
     {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
-                    (const unsigned char**)fonts58,"GAME",
+                    (const unsigned char**)openGLletters,"GAME",
                     m_app->getScreenWidth() / 2 - strlen("GAME")*9/2 ,3);
         unsigned char object[] = {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -94,14 +125,19 @@ void MainMenu::loop() {
     }
         break;
     }
-
-    // sleep
-//    m_currentID ++;
-//    if(m_currentID + 1 >= MENU_ID::MENU_MAX) m_currentID = MENU_ID::MENU_MESSAGE;
-
-//    m_app->msleep(1000);
 }
-
-void MainMenu::draw() {
-
+void MainMenu::drawScrollBar() {
+    // 00100
+    // 11111
+    // 10001
+    // 10001
+    // 10001
+    // 11111
+    // 00100
+    LCDLibrary::drawRect(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                         m_app->getScreenWidth()-4,0,
+                         1,m_app->getScreenHeight(),true);
+    LCDLibrary::drawRect(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                         m_app->getScreenWidth()-6,(m_currentID-MENU_MIN-1) * m_app->getScreenHeight()/(MENU_MAX - MENU_MIN - 1),
+                         5,m_app->getScreenHeight()/(MENU_MAX - MENU_MIN-1),false);
 }
