@@ -59,7 +59,37 @@ void LCDLibrary::drawString(unsigned char* display, int displayWidth, int displa
 }
 void LCDLibrary::drawLine(unsigned char* display, int displayWidth, int displayHeight,
                           int startX, int startY, int endX, int endY, int thickness) {
-    
+    if(startX == endX) {
+        drawRect(display,displayWidth,displayHeight,startX,startY,thickness,endY-startY,true);
+    } else {
+        float fStartX = (float)startX;
+        float fStartY = (float)startY;
+        float fEndX = (float)endX;
+        float fEndY = (float)endY;
+        float b = 1;
+        float a = -(fStartY-fEndY)/(fStartX-fEndX);
+        float c = a*fStartX + b*fStartY;
+        for(float px = fStartX; px < fEndX; px++){
+            float py = (c-a*px)/b;
+            for(int i=0; i< thickness; i++)
+                drawPixel(display,displayWidth,displayHeight,1,(int)px,(int)py+i);
+        }    
+    }
+//    if(startY == endY) {
+//        drawRect(display,displayWidth,displayHeight,startX,startY,endX-startX,thickness);
+//    } else {
+//        float fStartX = (float)startX;
+//        float fStartY = (float)startY;
+//        float fEndX = (float)endX;
+//        float fEndY = (float)endY;
+//        float a = 1;
+//        float b = a*(fStartX-fEndX)/(fEndY-fStartY);
+//        float c = a*fStartX + b*fEndX;
+//        for(float py = fStartY; py < fEndY; py++){
+//            float px = (c-b*py)/a;
+//            drawPixel(display,displayWidth,displayHeight,1,(int)px,(int)py);
+//        }  
+//    }
 }
 void LCDLibrary::drawRect(unsigned char* display, int displayWidth, int displayHeight,
                           int posX, int posY, int rectWidth, int rectHeight, bool fill) {

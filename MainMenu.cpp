@@ -31,13 +31,20 @@ void MainMenu::loop() {
         clearDisplay();
     }
     drawMenu();
-    drawScrollBar();
+//    drawScrollBar();
 }
 
 void MainMenu::clearDisplay() {
     LCDLibrary::clear(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),0x00);
 }
 void MainMenu::drawMenu() {
+    LCDLibrary::drawLine(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                         0,0,m_app->getScreenWidth(),0,3);
+    LCDLibrary::drawLine(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+                         0,0,0,m_app->getScreenHeight(),3);
+//    LCDLibrary::drawLine(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
+//                         0,0,m_app->getScreenWidth(),m_app->getScreenHeight(),3);
+    return;
     switch ((MENU_ID)m_currentID) {
         break;
     case MENU_CALL:
@@ -59,6 +66,7 @@ void MainMenu::drawMenu() {
 
         LCDLibrary::drawObject(m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                                object,32,32,m_app->getScreenWidth()/2-32/2,m_app->getScreenHeight()/2 - 32/2);
+        
     }
         break;
     case MENU_MESSAGE:
