@@ -37,22 +37,24 @@ void MainProcess::setRender(VideoRender* render)
 {
     m_render = render;
 }
-
+//#define DEBUG
 void MainProcess::updateScreen() {
     if(m_render != nullptr)
     {
         int width = m_application->getScreenWidth();
         int height = m_application->getScreenHeight();
         unsigned char* binaryFrame = m_application->getScreenData();
-//        printf("BinaryFrame:\r\n");
-//        for(int row = 0; row < height; row++) {
-//            for(int col = 0; col < width/8; col ++) {
-//                printf(BYTE_TO_BINARY_PATTERN "",BYTE_TO_BINARY (binaryFrame[row*width/8+col]));
-//            }
-//            printf("\r\n");
-//        }
-//        printf("\r\n");
-//        printf("RenderFrame:\r\n");
+#ifdef DEBUG
+        printf("BinaryFrame:\r\n");
+        for(int row = 0; row < height; row++) {
+            for(int col = 0; col < width/8; col ++) {
+                printf(BYTE_TO_BINARY_PATTERN "",BYTE_TO_BINARY (binaryFrame[row*width/8+col]));
+            }
+            printf("\r\n");
+        }
+        printf("\r\n");
+        printf("RenderFrame:\r\n");
+#endif
         for(int row = 0; row < height; row++) {
             for(int col = 0; col < width/8; col ++) {
                 for(int bit = 0; bit <8; bit++){
@@ -61,7 +63,9 @@ void MainProcess::updateScreen() {
                 }
                 
             }
-//            printf("\r\n");
+#ifdef DEBUG
+            printf("\r\n");
+#endif
         }
         m_render->handleNewFrame(m_renderData, width, height);
     }

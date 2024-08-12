@@ -9,6 +9,7 @@ enum MACHINE_STATE {
     MACHINE_ENTER_GAME,
     MACHINE_ENTER_MESSAGE,
     MACHINE_ENTER_CALL,
+    MACHINE_ENTER_CONTACTS,
 };
 
 enum BUTTON_ID {
@@ -32,6 +33,8 @@ public:
     void loop();
     void checkAllButtonState();
     int buttonState(BUTTON_ID buttonID);
+    MACHINE_STATE stateMachine();
+    void setMachineState(MACHINE_STATE machineState);
     virtual int printf(const char *fmt, ...) = 0;
     virtual void msleep(int millis) = 0;
     virtual long getSystemTimeInMillis() = 0;

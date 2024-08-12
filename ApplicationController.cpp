@@ -40,6 +40,18 @@ void ApplicationController::checkAllButtonState() {
 int ApplicationController::buttonState(BUTTON_ID buttonID) {
     return m_listButton[buttonID]->buttonState();
 }
+
+MACHINE_STATE ApplicationController::stateMachine() {
+    return m_machineState;
+}
+
+void ApplicationController::setMachineState(MACHINE_STATE machineState) {
+    if(machineState != m_machineState) {
+        m_machineState = machineState;
+        LCDLibrary::clear(getScreenData(),getScreenWidth(),getScreenHeight(),0x00);
+    }
+}
+
 int ApplicationController::getScreenWidth() {
     return m_frameWidth;
 }

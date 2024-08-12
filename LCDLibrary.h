@@ -4,14 +4,14 @@
 #include <string.h>
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
-  ((byte) & 0x80 ? '1' : '0'), \
-  ((byte) & 0x40 ? '1' : '0'), \
-  ((byte) & 0x20 ? '1' : '0'), \
-  ((byte) & 0x10 ? '1' : '0'), \
-  ((byte) & 0x08 ? '1' : '0'), \
-  ((byte) & 0x04 ? '1' : '0'), \
-  ((byte) & 0x02 ? '1' : '0'), \
-  ((byte) & 0x01 ? '1' : '0') 
+  ((byte) & 0x80 ? '0' : '_'), \
+  ((byte) & 0x40 ? '0' : '_'), \
+  ((byte) & 0x20 ? '0' : '_'), \
+  ((byte) & 0x10 ? '0' : '_'), \
+  ((byte) & 0x08 ? '0' : '_'), \
+  ((byte) & 0x04 ? '0' : '_'), \
+  ((byte) & 0x02 ? '0' : '_'), \
+  ((byte) & 0x01 ? '0' : '_')
 
 const unsigned char openGLletters[95][13] = {
 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},// space :32
@@ -121,13 +121,13 @@ public:
                     unsigned char* object, int objectWidth, int objectHeight,
                            int posX, int posY);
     static void drawChar(unsigned char* display, int displayWidth, int displayHeight,
-                         const unsigned char** fonts, char character, int posX, int posY);
+                         const unsigned char** fonts, char character, int posX, int posY, bool invertBG = false);
     static void drawString(unsigned char* display, int displayWidth, int displayHeight,
-                         const unsigned char** fonts, const char* data, int posX, int posY);
+                         const unsigned char** fonts, const char* data, int posX, int posY, bool invertBG = false);
     static void drawLine(unsigned char* display, int displayWidth, int displayHeight,
                          int startX, int startY, int endX, int endY, int thickness);
     static void drawRect(unsigned char* display, int displayWidth, int displayHeight,
-                         int posX, int posY, int rectWidth, int rectHeight, bool fill = false);
+                         int posX, int posY, int rectWidth, int rectHeight, int thickness = 1, bool fill = false);
     static void drawOval(unsigned char* display, int displayWidth, int displayHeight,
                            int posX, int posY, int ovalWidth, int ovalHeight, bool fill = false);
 };

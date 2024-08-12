@@ -52,13 +52,46 @@ import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import diy 1.0
-Window {
+ApplicationWindow {
     id: wroot
     visible: true
     width: 720
     height: 720
     title: qsTr("Gameboy")
-    
+    Item {
+        id: keyItem
+        Keys.onPressed:{
+            if(event.key === Qt.Key_Up ) {
+                mainProcess.handleButtonPressed(0,true);
+            } else if(event.key === Qt.Key_Down ) {
+                mainProcess.handleButtonPressed(1,true);
+            } else if(event.key === Qt.Key_Left ) {
+                mainProcess.handleButtonPressed(2,true);
+            } else if(event.key === Qt.Key_Right ) {
+                mainProcess.handleButtonPressed(3,true);
+            } else if(event.key === Qt.Key_Space ) {
+                mainProcess.handleButtonPressed(4,true);
+            } else if(event.key === Qt.Key_B ) {
+                mainProcess.handleButtonPressed(5,true);
+            }
+        }
+        Keys.onReleased:{
+            if(event.key === Qt.Key_Up ) {
+                mainProcess.handleButtonPressed(0,false);
+            } else if(event.key === Qt.Key_Down ) {
+                mainProcess.handleButtonPressed(1,false);
+            } else if(event.key === Qt.Key_Left ) {
+                mainProcess.handleButtonPressed(2,false);
+            } else if(event.key === Qt.Key_Right ) {
+                mainProcess.handleButtonPressed(3,false);
+            } else if(event.key === Qt.Key_Space ) {
+                mainProcess.handleButtonPressed(4,false);
+            } else if(event.key === Qt.Key_B ) {
+                mainProcess.handleButtonPressed(5,false);
+            }
+        }
+    }
+
     MainProcess {
         id: mainProcess
         onReadyToUpdate: {
@@ -187,6 +220,7 @@ Window {
     }
     
     Component.onCompleted: {
+        keyItem.focus = true;
         mainProcess.setRender(videoRender);
         mainProcess.startService();
     }
