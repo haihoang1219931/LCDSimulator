@@ -40,7 +40,7 @@ public Q_SLOTS:
     void updateScreen();
     void handleButtonPressed(int buttonID, bool pressed);
 private:
-    unsigned char m_renderData[3110400]; // 1920x1080 I420
+    unsigned char m_renderData[93110400]; // 1920x1080 I420
     bool m_stopped;
     QThread* m_thread;
     ApplicationSim* m_application;

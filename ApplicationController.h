@@ -43,7 +43,7 @@ protected:
     MACHINE_STATE m_machineState;
     int m_frameWidth;
     int m_frameHeight;
-    unsigned char m_frameData[2048]; // 128x128 bit
+    unsigned char m_frameData[9600]; // 320x240 bit
     MainMenu* m_mainMenu;
     GameMenu* m_gameMenu;
     Button* m_listButton[BUTTON_ID::BTN_MAX];

@@ -4,8 +4,8 @@
 #include "Button.h"
 ApplicationController::ApplicationController()
 {
-    m_frameWidth = 128;
-    m_frameHeight = 64;
+    m_frameWidth = 320;
+    m_frameHeight = 240;
     m_mainMenu = new MainMenu(this);
     m_gameMenu = new GameMenu(this);
     memset(m_frameData,0x00,sizeof(m_frameData));

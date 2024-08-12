@@ -55,11 +55,22 @@ void MainProcess::updateScreen() {
         printf("\r\n");
         printf("RenderFrame:\r\n");
 #endif
+        int sRow = 8; int sCol = 8;
         for(int row = 0; row < height; row++) {
             for(int col = 0; col < width/8; col ++) {
                 for(int bit = 0; bit <8; bit++){
-                    m_renderData[row*width+col*8+bit] = 
-                            (binaryFrame[row*width/8+col] & (0x01 << (7-bit))) == 0 ? 0 : 0xFF;
+                    // pixel value from
+                    // (row * sRow, (col*8+bit)*sCol)
+                    // to
+                    // ((row+1) * sRow-1, (col*8+bit)*sCol-1)
+                    unsigned char pixelValue = (binaryFrame[row*width/8+col] & (0x01 << (7-bit))) == 0 ? 0 : 0xFF;
+
+                    for(int subRow = 0; subRow < sRow-2; subRow++) {
+                        for(int subCol = 0; subCol < sCol-2; subCol ++) {
+                            m_renderData[(row * sRow + subRow)* width * sCol + ((col*8 + bit)*sCol + subCol)] = pixelValue;
+                        }
+                    }
+
                 }
                 
             }
@@ -67,7 +78,7 @@ void MainProcess::updateScreen() {
             printf("\r\n");
 #endif
         }
-        m_render->handleNewFrame(m_renderData, width, height);
+        m_render->handleNewFrame(m_renderData, width*sRow, height*sCol);
     }
 }
 void MainProcess::handleButtonPressed(int buttonID, bool pressed) {

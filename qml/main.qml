@@ -55,9 +55,43 @@ import diy 1.0
 ApplicationWindow {
     id: wroot
     visible: true
-    width: 720
-    height: 720
+    width: 960
+    height: 960
     title: qsTr("Gameboy")
+    Rectangle {
+        id: rectangle
+        x: 0
+        y: 0
+        width: 960
+        height: 720
+        color: "#84af40"
+        z: 0
+        Item {
+            id: canvas
+            anchors.fill: parent
+            VideoRender {
+                id: videoRender
+                anchors.fill: parent
+            }
+        }
+
+        Label {
+            id: lblMachineState
+            x: 8
+            y: 8
+            width: 682
+            height: 57
+            color: "#ffffff"
+            text: qsTr("MACHINE_STATE")
+            anchors.horizontalCenter: parent.horizontalCenter
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pointSize: 20
+
+
+        }
+    }
+
     Item {
         id: keyItem
         Keys.onPressed:{
@@ -92,17 +126,19 @@ ApplicationWindow {
         }
     }
 
+
     MainProcess {
         id: mainProcess
         onReadyToUpdate: {
             mainProcess.updateScreen();
         }
     }
-    
+
+
     Button{
         id: btnRight
-        x: 214
-        y: 599
+        x: 360
+        y: 822
         text: "Right"
         font.pointSize: 12
         onPressed: {
@@ -112,10 +148,11 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(3,false);
         }
     }
+
     Button{
         id: btnLeft
-        x: 10
-        y: 599
+        x: 156
+        y: 822
         text: "Left"
         font.pointSize: 12
         onPressed: {
@@ -125,10 +162,11 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(2,false);
         }
     }
+
     Button{
         id: btnDown
-        x: 113
-        y: 669
+        x: 259
+        y: 892
         text: "Down"
         font.pointSize: 12
         onPressed: {
@@ -138,10 +176,11 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(1,false);
         }
     }
+
     Button{
         id: btnUp
-        x: 113
-        y: 531
+        x: 259
+        y: 754
         text: "Up"
         font.pointSize: 12
         onPressed: {
@@ -151,11 +190,12 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(0,false);
         }
     }
-    
+
+
     Button {
         id: btnBack
-        x: 605
-        y: 563
+        x: 751
+        y: 786
         width: 105
         height: 101
         text: "Back"
@@ -167,10 +207,11 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(5,false);
         }
     }
+
     Button {
         id: btnEnter
-        x: 409
-        y: 563
+        x: 555
+        y: 786
         width: 105
         height: 101
         text: "Enter"
@@ -182,43 +223,7 @@ ApplicationWindow {
             mainProcess.handleButtonPressed(4,false);
         }
     }
-    Rectangle {
-        id: rectangle
-        x: 10
-        y: 12
-        width: 700
-        height: 500
-        color: "#84af40"
-        Item {
-            id: canvas
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.leftMargin: 49
-            anchors.topMargin: 71
-            width: 605
-            height: 390
-            VideoRender {
-                id: videoRender
-                anchors.fill: parent
-            }
-        }
 
-        Label {
-            id: lblMachineState
-            x: 8
-            y: 8
-            width: 682
-            height: 57
-            color: "#ffffff"
-            text: qsTr("MACHINE_STATE")
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.pointSize: 20
-            
-            
-        }
-    }
-    
     Component.onCompleted: {
         keyItem.focus = true;
         mainProcess.setRender(videoRender);
@@ -226,3 +231,8 @@ ApplicationWindow {
     }
 }
 
+
+/*##^## Designer {
+    D{i:10;anchors_height:320;anchors_width:640}
+}
+ ##^##*/
