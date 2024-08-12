@@ -21,7 +21,9 @@ public:
     void updateBait();
     void drawBait();
     void drawBody();
+    void drawOverlay();
 private:
+    int m_score;
     int m_baitState;
     int m_dirX;
     int m_dirY;

@@ -6,14 +6,14 @@
 #include <math.h>
 Snake::Snake(GameMenu* gameMenu, int gameID) :
     GameItem (gameMenu, gameID) {
-
+    m_score = 0;
     m_dirX = 1;
     m_dirY = 0;
-    m_bait.x = 15;
-    m_bait.y = 0;
+    m_bait.x = 100;
+    m_bait.y = 32;
 
     for(int i=0; i< 10; i++)
-        m_body.push_back(Point(i,0));
+        m_body.push_back(Point(i,14));
 
     m_baitState = BAIT_STATE::BAIT_NO_CONTACT;
 }
@@ -24,6 +24,7 @@ Snake::~Snake()
 
 void Snake::loop() {
     clearDisplay();
+    drawOverlay();
     // check input
     int dirX = m_dirX;
     int dirY = m_dirY;
@@ -54,8 +55,8 @@ void Snake::updateMove(int x, int y) {
     head.y += m_dirY;
     if(head.x < 0) head.x = m_gameMenu->app()->getScreenWidth() - 1;
     else if(head.x >= m_gameMenu->app()->getScreenWidth() - 1) head.x = 0;
-    if(head.y < 0) head.y = m_gameMenu->app()->getScreenHeight() - 1;
-    else if(head.y >= m_gameMenu->app()->getScreenHeight() - 1) head.y = 0;
+    if(head.y < 13) head.y = m_gameMenu->app()->getScreenHeight() - 1;
+    else if(head.y >= m_gameMenu->app()->getScreenHeight() - 1) head.y = 13;
     m_body.push_back(head);
     m_body.erase(m_body.begin());
 }
@@ -66,6 +67,7 @@ void Snake::updateBait() {
     if(m_baitState == BAIT_STATE::BAIT_NO_CONTACT) {
         if(m_bait.x == head.x && m_bait.y == head.y) {
             m_baitState = BAIT_STATE::BAIT_EATING;
+            m_score ++;
         }
     } else if(m_baitState == BAIT_STATE::BAIT_EATING) {
         if(m_bait.x == tail.x && m_bait.y == tail.y) {
@@ -75,7 +77,7 @@ void Snake::updateBait() {
         m_body.insert(m_body.begin(),m_bait);
         m_baitState = BAIT_STATE::BAIT_NO_CONTACT;
         m_bait.x = 1+random()%(m_gameMenu->app()->getScreenWidth()-1);
-        m_bait.y = 1+random()%(m_gameMenu->app()->getScreenHeight()-1);
+        m_bait.y = 13+1+random()%(m_gameMenu->app()->getScreenHeight()-1-13);
     }
 }
 
@@ -94,6 +96,27 @@ void Snake::drawBody() {
                 1,m_body[i].x,m_body[i].y);
     }
 }
+
+void Snake::drawOverlay() {
+    // draw score
+    int thousand = m_score / 1000;
+    int hundred = (m_score - thousand * 1000) / 100;
+    int dozen = (m_score - thousand * 1000 - hundred * 100) / 10;
+    int unit = m_score % 10;
+    LCDLibrary::drawChar(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         (const unsigned char**)openGLletters,thousand + '0',0,1);
+    LCDLibrary::drawChar(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         (const unsigned char**)openGLletters,hundred + '0',10,1);
+    LCDLibrary::drawChar(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         (const unsigned char**)openGLletters,dozen + '0',20,1);
+    LCDLibrary::drawChar(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         (const unsigned char**)openGLletters,unit + '0',30,1);
+
+    // draw bound
+    LCDLibrary::drawLine(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         0,13,m_gameMenu->app()->getScreenWidth(),13,1);
+}
+
 void Snake::clearDisplay() {
     LCDLibrary::clear(
                 m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),0x00);
