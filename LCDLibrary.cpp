@@ -5,10 +5,13 @@ void copyShiftArray(unsigned char* dest, int destLen, unsigned char* src, int sr
     int rShift = pos % 8;
     for(int i=0;i <= copyBits / 8; i++) {
         if(i == 0) {
-            dest[pos/8+i] = (dest[pos/8+i] & (0xFF << (8 - rShift))) | ((invertBG?(~src[i]):src[i]) >> rShift);
+            dest[pos/8+i] =  dest[pos/8+i] |
+                    ((invertBG?(~src[i]):src[i]) >> rShift);
         }
         else {
-            dest[pos/8+i] = (i < srcLen?(invertBG?(~src[i]):src[i])>>rShift : (dest[pos/8+i] & (0xFF >> rShift))) | ((invertBG?(~src[i-1]):src[i-1]) << (8-rShift));
+            dest[pos/8+i] = (i < srcLen?(invertBG?(~src[i]):src[i])>>rShift :
+                                        dest[pos/8+i]) |
+                    ((invertBG?(~src[i-1]):src[i-1]) << (8-rShift));
         }
     }
 }
@@ -29,7 +32,8 @@ void LCDLibrary::clear(unsigned char* display, int displayWidth, int displayHeig
 void LCDLibrary::drawPixel(unsigned char* display, int displayWidth, int displayHeight,
                            unsigned char value, int posX, int posY) {
 
-    if(posY*displayWidth+posX >=0 && posY*displayWidth+posX <displayWidth*displayHeight)
+    if(posX >=0 && posX < displayWidth &&
+            posY >=0 && posY < displayHeight)
     display[(posY*displayWidth+posX)/8] = display[(posY*displayWidth+posX)/8] | (value << (7-posX%8));
 }
 void LCDLibrary::drawObject(unsigned char* display, int displayWidth, int displayHeight,
@@ -38,6 +42,8 @@ void LCDLibrary::drawObject(unsigned char* display, int displayWidth, int displa
     for(int row = 0; row < objectHeight; row ++) {
         copyShiftArray(&display[(posY+row)*displayWidth/8],displayWidth/8,(unsigned char*)&object[row*objectWidth/8],objectWidth/8,posX);
     }
+//    printObject(object,objectWidth,objectHeight);
+//    printf("\r\n");
 }
 
 

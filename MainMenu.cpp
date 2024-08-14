@@ -3,11 +3,11 @@
 #include "LCDLibrary.h"
 #include "Button.h"
 #include "Game/GameMenu.h"
-// Link to convert bitmap https://mischianti.org/images-to-byte-array-online-converter-cpp-arduino/
+
 MainMenu::MainMenu(ApplicationController* app)
 {
     m_app = app;
-    m_currentID = MENU_MESSAGE;
+    m_currentID = MENU_GAME;
 //    clearDisplay();
 //    LCDLibrary::drawString(
 //                m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),

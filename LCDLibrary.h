@@ -2,6 +2,8 @@
 #define LCDLIBRARY_H
 #include <stdio.h>
 #include <string.h>
+
+// Link to convert bitmap https://mischianti.org/images-to-byte-array-online-converter-cpp-arduino/
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
   ((byte) & 0x80 ? '0' : '_'), \

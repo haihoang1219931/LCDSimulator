@@ -65,8 +65,8 @@ void MainProcess::updateScreen() {
                     // ((row+1) * sRow-1, (col*8+bit)*sCol-1)
                     unsigned char pixelValue = (binaryFrame[row*width/8+col] & (0x01 << (7-bit))) == 0 ? 0 : 0xFF;
 
-                    for(int subRow = 0; subRow < sRow-2; subRow++) {
-                        for(int subCol = 0; subCol < sCol-2; subCol ++) {
+                    for(int subRow = 0; subRow < sRow-1; subRow++) {
+                        for(int subCol = 0; subCol < sCol-1; subCol ++) {
                             m_renderData[(row * sRow + subRow)* width * sCol + ((col*8 + bit)*sCol + subCol)] = pixelValue;
                         }
                     }

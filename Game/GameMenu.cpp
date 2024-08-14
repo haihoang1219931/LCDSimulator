@@ -3,6 +3,7 @@
 #include "../LCDLibrary.h"
 #include "../Button.h"
 #include "Snake.h"
+#include "SpaceImpact.h"
 GameMenu::GameMenu(ApplicationController* app)
 {
     m_app = app;
@@ -76,6 +77,10 @@ void GameMenu::playGame() {
         switch (m_currentID) {
         case GAME_ID::GAME_SNAKE: {
             m_gameItem = new Snake(this,m_currentID);
+        }
+            break;
+        case GAME_ID::GAME_SPACE_IMPACT: {
+            m_gameItem = new SpaceImpact(this,m_currentID);
         }
             break;
         }

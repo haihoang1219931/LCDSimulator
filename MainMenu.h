@@ -3,10 +3,10 @@
 
 enum MENU_ID {
     MENU_MIN,
+    MENU_GAME,
     MENU_CALL,
     MENU_MESSAGE,
     MENU_CONTACTS,
-    MENU_GAME,
     MENU_MAX,
 };
 

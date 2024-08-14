@@ -9,11 +9,11 @@ Snake::Snake(GameMenu* gameMenu, int gameID) :
     m_score = 0;
     m_dirX = 1;
     m_dirY = 0;
-    m_bait.x = 100;
+    m_bait.x = 32;
     m_bait.y = 32;
 
     for(int i=0; i< 10; i++)
-        m_body.push_back(Point(i,14));
+        m_body.push_back(Point(i,32));
 
     m_baitState = BAIT_STATE::BAIT_NO_CONTACT;
 }
@@ -54,9 +54,9 @@ void Snake::updateMove(int x, int y) {
     head.x += m_dirX;
     head.y += m_dirY;
     if(head.x < 0) head.x = m_gameMenu->app()->getScreenWidth() - 1;
-    else if(head.x >= m_gameMenu->app()->getScreenWidth() - 1) head.x = 0;
+    else if(head.x > m_gameMenu->app()->getScreenWidth() - 1) head.x = 0;
     if(head.y < 13) head.y = m_gameMenu->app()->getScreenHeight() - 1;
-    else if(head.y >= m_gameMenu->app()->getScreenHeight() - 1) head.y = 13;
+    else if(head.y > m_gameMenu->app()->getScreenHeight() - 1) head.y = 13;
     m_body.push_back(head);
     m_body.erase(m_body.begin());
 }
@@ -79,21 +79,92 @@ void Snake::updateBait() {
         m_bait.x = 1+random()%(m_gameMenu->app()->getScreenWidth()-1);
         m_bait.y = 13+1+random()%(m_gameMenu->app()->getScreenHeight()-1-13);
     }
+
 }
 
 void Snake::drawBait() {
     LCDLibrary::drawPixel(
             m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-            1,m_bait.x,m_bait.y);
+            1,m_bait.x+1,m_bait.y);
+    LCDLibrary::drawPixel(
+            m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+            1,m_bait.x-1,m_bait.y);
+    LCDLibrary::drawPixel(
+            m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+            1,m_bait.x,m_bait.y+1);
+    LCDLibrary::drawPixel(
+            m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+            1,m_bait.x,m_bait.y-1);
 }
 void Snake::drawBody() {
-    for(int i=0; i< m_body.size(); i++) {
+    // draw header
+    Point head = m_body[m_body.size()-1];
+    if(m_dirX == -1 ) {
         LCDLibrary::drawPixel(
                 m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                1,m_body[i].x,m_body[i].y);
+                1,head.x+1,head.y);
         LCDLibrary::drawPixel(
                 m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                1,m_body[i].x,m_body[i].y);
+                1,head.x,head.y+2);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x,head.y-2);
+    }
+    if(m_dirX == 1 ) {
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x-1,head.y);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x,head.y+2);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x,head.y-2);
+    }
+    if(m_dirY == -1 ) {
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x,head.y+1);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x+2,head.y);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x-2,head.y);
+    }
+    if(m_dirY == 1 ) {
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x,head.y-1);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x+2,head.y);
+        LCDLibrary::drawPixel(
+                m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                1,head.x-2,head.y);
+    }
+
+    // draw main body
+    for(int i=m_body.size()-2; i>= 0; i--) {
+        if(i%2 == 0) {
+            LCDLibrary::drawPixel(
+                    m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                    1,m_body[i].x,m_body[i].y);
+        } else {
+            LCDLibrary::drawPixel(
+                    m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                    1,m_body[i].x+1,m_body[i].y);
+            LCDLibrary::drawPixel(
+                    m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                    1,m_body[i].x-1,m_body[i].y);
+
+            LCDLibrary::drawPixel(
+                    m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                    1,m_body[i].x,m_body[i].y+1);
+            LCDLibrary::drawPixel(
+                    m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                    1,m_body[i].x,m_body[i].y-1);
+        }
     }
 }
 
