@@ -5,7 +5,7 @@ void copyShiftArray(unsigned char* dest, int destLen, unsigned char* src, int sr
     int rShift = pos % 8;
     for(int i=0;i <= copyBits / 8; i++) {
         if(i == 0) {
-            dest[pos/8+i] =  dest[pos/8+i] |
+            dest[pos/8+i] =  (invertBG?0x00:dest[pos/8+i]) |
                     ((invertBG?(~src[i]):src[i]) >> rShift);
         }
         else {

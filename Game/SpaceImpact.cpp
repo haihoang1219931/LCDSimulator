@@ -36,7 +36,7 @@
     0000 0000 0111 0000
     0000 0000 0010 0000
 */
-unsigned char shipSprite[][10][18] = {
+const unsigned char shipSprite[][10][18] = {
 
     { // State Init
         {   0x00,0x20,
@@ -146,6 +146,86 @@ unsigned char shipSprite[][10][18] = {
         },
     },
 };
+
+/*
+    1111 1100
+    0001 1010
+    0000 1111
+    0001 1010
+    1111 1100
+*/
+const unsigned char alien1[] = {
+    0xFC,
+    0x1A,
+    0x0F,
+    0x1A,
+    0xFC,
+};
+/*
+    0000 1110
+    0000 0100
+    0000 0100
+    0011 1101
+    1111 1111
+    0011 1101
+    0000 0100
+    0000 0100
+    0000 1110
+*/
+const unsigned char alien2[] = {
+    0x0E,
+    0x04,
+    0x04,
+    0x3D,
+    0xFF,
+    0x3D,
+    0x04,
+    0x04,
+    0x0E,
+};
+/*
+ * 0000 0000
+ * 0000 0010
+ * 0100 0000
+ * 0001 1000
+ * 0001 1000
+ * 1000 0001
+ * 0000 0000
+ * 0000 0000
+*/
+/*
+ * 0000 1011
+ * 0110 0011
+ * 0110 0000
+ * 0000 1000
+ * 0001 1100
+ * 1000 1001
+ * 0000 0011
+ * 0110 1000
+*/
+const unsigned char explosionSpite[][8] = {
+    {
+        0x00,
+        0x02,
+        0x40,
+        0x18,
+        0x18,
+        0x81,
+        0x00,
+        0x00,
+    },
+    {
+        0x2B,
+        0x63,
+        0x60,
+        0x08,
+        0x1C,
+        0x89,
+        0x03,
+        0x58
+    },
+};
+
 SpaceImpact::SpaceImpact(GameMenu* gameMenu, int gameID) :
     GameItem (gameMenu, gameID) {
     m_overlay = Rect(0,13,
@@ -161,7 +241,6 @@ SpaceImpact::SpaceImpact(GameMenu* gameMenu, int gameID) :
     m_tick = 0;
     int shipMovingTimeSlot[] = {1,2,3,2,1};
     m_spaceShip.setSpiteTimeSlot(SPACESHIP_MOVING,shipMovingTimeSlot,sizeof (shipMovingTimeSlot) / sizeof (shipMovingTimeSlot[0]));
-
 }
 
 SpaceImpact::~SpaceImpact() {
@@ -216,15 +295,17 @@ void SpaceImpact::updateAliens() {
     if(m_tick == 0) {
         if(random()%2){
             Alien newAli(m_overlay.width-5,random()% m_overlay.height,8,5,0);
+            int destructionTimeSlot[] = {5,5};
+            newAli.setSpiteTimeSlot(ALIEN_STATE::ALIEN_HIT,destructionTimeSlot,sizeof (destructionTimeSlot) / sizeof (destructionTimeSlot[0]));
             m_aliens.push_back(newAli);
         } else {
-            Alien newAli(m_overlay.width-5,random()% m_overlay.height,16,7,1);
+            Alien newAli(m_overlay.width-5,random()% m_overlay.height,8,9,1);
+            int destructionTimeSlot[] = {5,5};
+            newAli.setSpiteTimeSlot(ALIEN_STATE::ALIEN_HIT,destructionTimeSlot,sizeof (destructionTimeSlot) / sizeof (destructionTimeSlot[0]));
             m_aliens.push_back(newAli);
         }
-
     }
     for(int i = 0; i< m_aliens.size(); i++) {
-        m_aliens[i].increaseTick(1);
         switch (m_aliens[i].state()) {
         case ALIEN_STATE::ALIEN_INIT: {
             m_aliens[i].setState(ALIEN_STATE::ALIEN_TOWARD);
@@ -232,10 +313,16 @@ void SpaceImpact::updateAliens() {
         }
         case ALIEN_STATE::ALIEN_TOWARD: {
             m_aliens[i].x --;
-            if(m_aliens[i].x+m_aliens[i].width <= 0) m_aliens[i].setState(ALIEN_STATE::ALIEN_HIT);
+            if(m_aliens[i].x+m_aliens[i].width <= 0) m_aliens[i].setState(ALIEN_STATE::ALIEN_LOST);
+            break;
+        }
+        case ALIEN_STATE::ALIEN_LOST: {
+            m_aliens.erase(m_aliens.begin()+i);
             break;
         }
         case ALIEN_STATE::ALIEN_HIT: {
+            m_aliens[i].increaseTick(1);
+            if(m_aliens[i].tick() >= m_aliens[i].totalTime())
             m_aliens.erase(m_aliens.begin()+i);
             break;
         }
@@ -311,42 +398,11 @@ void SpaceImpact::drawSpaceShip() {
         break;
     }
     LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                           shipSprite[m_spaceShip.state()][m_spaceShip.spiteID()],16,9,
+                           (unsigned char*)shipSprite[m_spaceShip.state()][m_spaceShip.spiteID()],16,9,
                            m_spaceShip.x + m_overlay.x+1,m_spaceShip.y+m_overlay.y+1);
 }
 void SpaceImpact::drawAliens() {
-    /*
-        1111 1100
-        0001 1010
-        0000 1111
-        0001 1010
-        1111 1100
-    */
-    unsigned char alien1[] = {
-        0xFC,
-        0x1A,
-        0x0F,
-        0x1A,
-        0xFC,
-    };
-    /*
-        0000 0000 0111 0000
-        0000 0000 0010 0000
-        0111 0000 0111 1000
-        0111 1111 1111 1100
-        0111 0000 0111 1000
-        0000 0000 0010 0000
-        0000 0000 0111 0000
-    */
-    unsigned char alien2[] = {
-        0x00,0x70,
-        0x00,0x20,
-        0x70,0x78,
-        0x7F,0xFC,
-        0x70,0x78,
-        0x00,0x20,
-        0x00,0x70,
-    };
+
 
     for(int i = 0; i< m_aliens.size(); i++) {
         switch (m_aliens[i].state()) {
@@ -356,14 +412,16 @@ void SpaceImpact::drawAliens() {
         }
         case ALIEN_STATE::ALIEN_TOWARD: {
             LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                        m_aliens[i].type() == 0?alien1:alien2,m_aliens[i].width,m_aliens[i].height,
+                        m_aliens[i].type() == 0?(unsigned char*)alien1:(unsigned char*)alien2,m_aliens[i].width,m_aliens[i].height,
                         m_aliens[i].x + m_overlay.x + 1, m_aliens[i].y + m_overlay.y + 1);
             break;
         }
         case ALIEN_STATE::ALIEN_HIT: {
-//            LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-//                        object,m_aliens[i].width,m_aliens[i].height,
-//                        m_aliens[i].x + m_overlay.x + 1, m_aliens[i].y + m_overlay.y + 1);
+//            printf("m_aliens[%d] tick[%d/%d] spiteID[%d]\r\n",
+//                   i, m_aliens[i].tick(),m_aliens[i].totalTime(),m_aliens[i].spiteID());
+            LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                        (unsigned char*)explosionSpite[m_aliens[i].spiteID()],8,8,
+                        m_aliens[i].x + m_overlay.x + 1, m_aliens[i].y + m_overlay.y + 1);
             break;
         }
         }

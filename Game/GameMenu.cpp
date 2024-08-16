@@ -128,25 +128,25 @@ void GameMenu::drawMenu() {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                     (const unsigned char**)openGLletters,m_gameTittle[row],
-                    0,1+currentRow  * m_app->getScreenHeight() / rowLimit);
+                    0,currentRow  * m_app->getScreenHeight() / rowLimit  + (m_app->getScreenHeight() / rowLimit/2-13/2));
         currentRow ++;
     }
     //   print current item
     LCDLibrary::drawRect(
                 m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                 0,currentRow * m_app->getScreenHeight() / rowLimit,
-                m_app->getScreenWidth(),14,1,true);
+                m_app->getScreenWidth(),m_app->getScreenHeight() / rowLimit,1,true);
     LCDLibrary::drawString(
                 m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                 (const unsigned char**)openGLletters,m_gameTittle[m_currentID],
-                0,1+currentRow * m_app->getScreenHeight() / rowLimit,true);
+                0,currentRow * m_app->getScreenHeight() / rowLimit + (m_app->getScreenHeight() / rowLimit/2-13/2),true);
     currentRow ++;
     //   print next items
     for(int row = m_currentID + 1; row <= stopDrawItem; row ++) {
         LCDLibrary::drawString(
                     m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                     (const unsigned char**)openGLletters,m_gameTittle[row],
-                    0,1+currentRow * m_app->getScreenHeight() / rowLimit);
+                    0,currentRow * m_app->getScreenHeight() / rowLimit  + (m_app->getScreenHeight() / rowLimit/2-13/2));
         currentRow++;
     }
 }

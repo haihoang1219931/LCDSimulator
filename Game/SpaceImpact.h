@@ -4,7 +4,6 @@
 #include "GameItem.h"
 #include <vector>
 
-
 enum BULLET_STATE {
     BULLET_INIT,
     BULLET_FIRING,
@@ -15,6 +14,7 @@ enum ALIEN_STATE {
     ALIEN_INIT,
     ALIEN_TOWARD,
     ALIEN_LOCK,
+    ALIEN_LOST,
     ALIEN_HIT
 };
 
