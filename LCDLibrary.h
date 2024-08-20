@@ -115,23 +115,22 @@ const unsigned char openGLletters[95][13] = {
 class LCDLibrary
 {
 public:
-    static void clear(unsigned char* display, int displayWidth, int displayHeight,
-                               unsigned char value = 0x00);
+    static void clear(unsigned char* display, int displayWidth, int displayHeight, bool invertBG = false);
     static void drawPixel(unsigned char* display, int displayWidth, int displayHeight,
-                               unsigned char value,int posX, int posY);
+                               int posX, int posY, bool invertBG = false);
     static void drawObject(unsigned char* display, int displayWidth, int displayHeight,
                     unsigned char* object, int objectWidth, int objectHeight,
-                           int posX, int posY);
+                           int posX, int posY, bool invertBG = false);
     static void drawChar(unsigned char* display, int displayWidth, int displayHeight,
                          const unsigned char** fonts, char character, int posX, int posY, bool invertBG = false);
     static void drawString(unsigned char* display, int displayWidth, int displayHeight,
-                         const unsigned char** fonts, const char* data, int posX, int posY, bool invertBG = false);
+                         const unsigned char** fonts, const char* data, int posX, int posY, int space = 1, bool invertBG = false);
     static void drawLine(unsigned char* display, int displayWidth, int displayHeight,
-                         int startX, int startY, int endX, int endY, int thickness);
+                         int startX, int startY, int endX, int endY, int thickness, bool invertBG = false);
     static void drawRect(unsigned char* display, int displayWidth, int displayHeight,
-                         int posX, int posY, int rectWidth, int rectHeight, int thickness = 1, bool fill = false);
+                         int posX, int posY, int rectWidth, int rectHeight, int thickness = 1, bool fill = false, bool invertBG = false);
     static void drawOval(unsigned char* display, int displayWidth, int displayHeight,
-                           int posX, int posY, int ovalWidth, int ovalHeight, bool fill = false);
+                           int posX, int posY, int ovalWidth, int ovalHeight, bool fill = false, bool invertBG = false);
 };
 
 #endif // LCDLIBRARY_H

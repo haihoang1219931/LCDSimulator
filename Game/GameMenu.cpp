@@ -41,8 +41,6 @@ void GameMenu::showMenu() {
         m_currentID = GAME_MIN+1;
     }
     int currentID = m_currentID;
-    // check input
-    m_app->checkAllButtonState();
 
     // check navigate button state
     if(m_app->buttonState(BUTTON_ID::BTN_RIGHT) == BUTTON_STATE::BUTTON_PRESS ||
@@ -139,7 +137,7 @@ void GameMenu::drawMenu() {
     LCDLibrary::drawString(
                 m_app->getScreenData(),m_app->getScreenWidth(),m_app->getScreenHeight(),
                 (const unsigned char**)openGLletters,m_gameTittle[m_currentID],
-                0,currentRow * m_app->getScreenHeight() / rowLimit + (m_app->getScreenHeight() / rowLimit/2-13/2),true);
+                0,currentRow * m_app->getScreenHeight() / rowLimit + (m_app->getScreenHeight() / rowLimit/2-13/2),1,true);
     currentRow ++;
     //   print next items
     for(int row = m_currentID + 1; row <= stopDrawItem; row ++) {

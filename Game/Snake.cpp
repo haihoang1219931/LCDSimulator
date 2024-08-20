@@ -28,7 +28,6 @@ void Snake::loop() {
     // check input
     int dirX = m_dirX;
     int dirY = m_dirY;
-    m_gameMenu->app()->checkAllButtonState();
     if(m_gameMenu->app()->buttonState(BUTTON_ID::BTN_UP) == BUTTON_STATE::BUTTON_PRESS) {
         dirX = 0; dirY = m_dirY == 0? -1: m_dirY;
     } else if(m_gameMenu->app()->buttonState(BUTTON_ID::BTN_DOWN) == BUTTON_STATE::BUTTON_PRESS) {

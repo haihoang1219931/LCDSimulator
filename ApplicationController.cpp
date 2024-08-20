@@ -4,8 +4,8 @@
 #include "Button.h"
 ApplicationController::ApplicationController()
 {
-    m_frameWidth = 160;
-    m_frameHeight = 120;
+    m_frameWidth = 120;
+    m_frameHeight = 90;
     m_mainMenu = new MainMenu(this);
     m_gameMenu = new GameMenu(this);
     memset(m_frameData,0x00,sizeof(m_frameData));
@@ -20,6 +20,7 @@ ApplicationController::~ApplicationController() {
 }
 
 void ApplicationController::loop() {
+    checkAllButtonState();
     switch(m_machineState) {
         case MACHINE_STATE::MACHINE_SHOW_MENU:
             m_mainMenu->loop();
@@ -48,7 +49,7 @@ MACHINE_STATE ApplicationController::stateMachine() {
 void ApplicationController::setMachineState(MACHINE_STATE machineState) {
     if(machineState != m_machineState) {
         m_machineState = machineState;
-        LCDLibrary::clear(getScreenData(),getScreenWidth(),getScreenHeight(),0x00);
+        LCDLibrary::clear(getScreenData(),getScreenWidth(),getScreenHeight());
     }
 }
 

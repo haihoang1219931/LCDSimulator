@@ -43,8 +43,6 @@ MainMenu::MainMenu(ApplicationController* app)
 void MainMenu::loop() {
 //    return;
     int currentID = m_currentID;
-    // check input
-    m_app->checkAllButtonState();
 
     // check navigate button state
     if(m_app->buttonState(BUTTON_ID::BTN_RIGHT) == BUTTON_STATE::BUTTON_PRESS ||
