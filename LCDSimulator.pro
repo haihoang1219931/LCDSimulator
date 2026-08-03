@@ -9,6 +9,7 @@ RESOURCES += qml.qrc
 CONFIG += game
 SOURCES += main.cpp  \
     ApplicationController.cpp \
+    Game/DinosaurRun.cpp \
     VideoDisplay/I420Render.cpp \
     VideoDisplay/VideoRender.cpp \
     Game/GameItem.cpp \
@@ -22,6 +23,7 @@ SOURCES += main.cpp  \
 
 HEADERS += \
     ApplicationController.h \
+    Game/DinosaurRun.h \
     VideoDisplay/I420Render.h \
     VideoDisplay/VideoRender.h \
     Game/GameItem.h \

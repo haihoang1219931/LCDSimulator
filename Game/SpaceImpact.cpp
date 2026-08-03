@@ -3,7 +3,10 @@
 #include "ApplicationController.h"
 #include "Button.h"
 #include "LCDLibrary.h"
-
+#include <random>
+#ifndef random
+    #define random rand
+#endif
 // icon capture from this https://www.youtube.com/watch?v=tKobl50jrLk
 const unsigned char shipSprite[][10][30] = {
 
@@ -494,7 +497,7 @@ Alien SpaceImpact::createAlien() {
 
     // set pos
     m_tmpAlien.x = m_overlay.width - 1 - m_tmpAlien.width/2;
-    m_tmpAlien.y = m_tmpAlien.height/2 + random()%(m_overlay.height - m_tmpAlien.height);
+    m_tmpAlien.y = m_tmpAlien.height/2 + (float)(random()%(int)(m_overlay.height - m_tmpAlien.height));
 
     // set hit timeslot
     int alienhitTimeSlot[] = {5,5};

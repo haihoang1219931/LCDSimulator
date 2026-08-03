@@ -4,6 +4,10 @@
 #include <math.h>
 class GameMenu;
 #define MAX_OBJECT_STATE 10
+enum GAME_PLAYER {
+    GAME_PLAYER1,
+    GAME_PLAYER2,
+};
 enum GAME_PLAY_STATE {
     GAME_PLAY_PLAYING,
     GAME_PLAY_SHOW_SCORE,
@@ -12,21 +16,21 @@ enum GAME_PLAY_STATE {
 
 class Point{
 public:
-    Point(int _x = 0, int _y = 0) : x(_x), y (_y) {}
-    int x;
-    int y;
+    Point(float _x = 0, float _y = 0) : x(_x), y (_y) {}
+    float x;
+    float y;
 } ;
 class Rect {
 public:
-    Rect(int _x = 0, int _y = 0, int _width = 0, int _height = 0) : x(_x), y (_y), width(_width), height(_height) {}
-    int x;
-    int y;
-    int width;
-    int height;
+    Rect(float _x = 0, float _y = 0, float _width = 0, float _height = 0) : x(_x), y (_y), width(_width), height(_height) {}
+    float x;
+    float y;
+    float width;
+    float height;
 };
 class GameObject : public Rect{
 public:
-    GameObject(int _x = 0, int _y = 0, int _width = 0, int _height = 0) : Rect(_x,_y,_width,_height) {
+    GameObject(float _x = 0, float _y = 0, float _width = 0, float _height = 0) : Rect(_x,_y,_width,_height) {
         for(int i=0; i< MAX_OBJECT_STATE; i++) {
             m_tick[i] = 0;
             m_numSlot[i] = 0;
@@ -36,6 +40,7 @@ public:
         m_dirX = 0;
         m_dirY = 0;
         m_state = 0;
+        m_enabled = 0;
     }
     Point center() { return Point(x+width/2+1,y+height/2+1);}
     bool collide(GameObject& otherObject) {
@@ -81,25 +86,39 @@ public:
     int spiteID(int state) {
         return m_spiteID[state];
     }
-    int dirX() {return m_dirX;}
-    void setDirX(int dirX) {m_dirX = dirX;}
+    float dirX() {return m_dirX;}
+    void setDirX(float dirX) {m_dirX = dirX;}
 
-    int dirY() {return m_dirY;}
-    void setDirY(int dirY) {m_dirY = dirY;}
+    float dirY() {return m_dirY;}
+    void setDirY(float dirY) {m_dirY = dirY;}
 
     void move() {
         x += m_dirX;
         y += m_dirY;
     }
+    int enabled() {return m_enabled;}
+    void setEnable(int enable) {
+        if(m_enabled != enable) {
+            m_enabled = enable;
+        }
+    }
+    int type() { return m_type; }
+    void setType(int type) {
+        if(m_type != type) {
+            m_type = type;
+        }
+    }
 protected:
     int m_state;
-    int m_dirX;
-    int m_dirY;
+    float m_dirX;
+    float m_dirY;
     int m_tick[MAX_OBJECT_STATE];
     int m_spiteID[MAX_OBJECT_STATE];
     int m_timeSlot[MAX_OBJECT_STATE][10];
     int m_numSlot[MAX_OBJECT_STATE];
     int m_totalTime[MAX_OBJECT_STATE];
+    int m_enabled;
+    int m_type;
 };
 class GameItem
 {

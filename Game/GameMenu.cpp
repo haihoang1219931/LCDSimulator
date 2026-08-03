@@ -2,20 +2,14 @@
 #include "../ApplicationController.h"
 #include "../LCDLibrary.h"
 #include "../Button.h"
-#include "Snake.h"
 #include "SpaceImpact.h"
+#include "DinosaurRun.h"
 GameMenu::GameMenu(ApplicationController* app)
 {
     m_app = app;
     m_currentID = GAME_MIN;
     m_gameTittle[GAME_SPACE_IMPACT] = "Space Impact";
-    m_gameTittle[GAME_SPACE_IMPACT_2] = "Space Impact II";
-    m_gameTittle[GAME_RACING] = "Racing";
-    m_gameTittle[GAME_SNAKE] = "Snake";
-    m_gameTittle[GAME_TANK] = "Tank";
-    m_gameTittle[GAME_TANK_2] = "Tank II";
-    m_gameTittle[GAME_SPACE_INVADER] = "Space Invader";
-    m_gameTittle[GAME_CHESS] = "Chess";
+    m_gameTittle[GAME_DINO_RUN] = "Dino Run";
     m_machineState = GAME_STATE::GAME_SHOW_MENU;
     m_gameItem = nullptr;
 }
@@ -61,7 +55,6 @@ void GameMenu::showMenu() {
         m_currentID = currentID;
         clearDisplay();
     }
-
     drawMenu();
     if(m_app->buttonState(BUTTON_ID::BTN_BACK) == BUTTON_STATE::BUTTON_PRESS) {
         m_app->setMachineState(MACHINE_STATE::MACHINE_SHOW_MENU);
@@ -73,8 +66,8 @@ void GameMenu::showMenu() {
 void GameMenu::playGame() {
     if(m_gameItem == nullptr) {
         switch (m_currentID) {
-        case GAME_ID::GAME_SNAKE: {
-            m_gameItem = new Snake(this,m_currentID);
+        case GAME_ID::GAME_DINO_RUN: {
+            m_gameItem = new DinosaurRun(this,m_currentID);
         }
             break;
         case GAME_ID::GAME_SPACE_IMPACT: {
@@ -118,7 +111,7 @@ void GameMenu::drawMenu() {
     if(m_currentID > rowLimit) {
         startDrawItem = m_currentID - (rowLimit - 1);
     }
-    int stopDrawItem = rowLimit;
+    int stopDrawItem = GAME_MAX - 1 > rowLimit?rowLimit:GAME_MAX-1;
     if(m_currentID > rowLimit) {
         stopDrawItem = m_currentID;
     }

@@ -4,6 +4,10 @@
 #include "Button.h"
 #include "LCDLibrary.h"
 #include <math.h>
+#include <random>
+#ifndef random
+    #define random rand
+#endif
 Snake::Snake(GameMenu* gameMenu, int gameID) :
     GameItem (gameMenu, gameID) {
     m_score = 0;
