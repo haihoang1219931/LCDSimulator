@@ -3,7 +3,8 @@
 
 #include "GameItem.h"
 #include <vector>
-#define MAX_NUM_TREE 2
+#define MAX_NUM_BIRD 1
+#define MAX_NUM_TREE 1
 enum OBJECT_STATE {
     OBJECT_INIT,
     OBJECT_TOWARD,
@@ -44,6 +45,7 @@ public:
     DinosaurRun(GameMenu* gameMenu, int gameID);
     ~DinosaurRun() override;
     void loop() override;
+    void waitInput();
     void playGame();
     void showScore();
     void exitGame();
@@ -54,12 +56,10 @@ public:
     GameObject createStar();
     GameObject createSun();
     void updateMove(int dinoID, int state);
-    void updateBirds();
-    void updateTrees();
     void updateDinos();
+    void updateObstacles();
     void updateBackground();
-    void drawBirds();
-    void drawTree();
+    void drawObstacles();
     void drawDinos();
     void drawBackground();
     void drawOverlay();
@@ -71,7 +71,7 @@ private:
 private:
     bool m_invertBG;
     GameObject m_dino[2];
-    GameObject m_birds[2];
+    GameObject m_birds[MAX_NUM_BIRD];
     GameObject m_trees[MAX_NUM_TREE];
     GameObject m_clouds[2];
     GameObject m_stars[2];

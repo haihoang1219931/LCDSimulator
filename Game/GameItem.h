@@ -9,6 +9,7 @@ enum GAME_PLAYER {
     GAME_PLAYER2,
 };
 enum GAME_PLAY_STATE {
+    GAME_PLAY_WAIT,
     GAME_PLAY_PLAYING,
     GAME_PLAY_SHOW_SCORE,
     GAME_PLAY_EXIT,
@@ -43,9 +44,9 @@ public:
         m_enabled = 0;
     }
     Point center() { return Point(x+width/2+1,y+height/2+1);}
-    bool collide(GameObject& otherObject) {
-        return abs(x-otherObject.x) < (width + otherObject.width)/2 &&
-                abs(y-otherObject.y) < (height + otherObject.height)/2;
+    bool collide(GameObject& otherObject, float depth = 0) {
+        return fabs(x-otherObject.x) < (width + otherObject.width)/2 - depth &&
+                fabs(y-otherObject.y) < (height + otherObject.height)/2 - depth;
     }
     int state() {return m_state;}
     void setState(int state) {

@@ -8,11 +8,11 @@
     #define random rand
 #endif
 #define DINOSAUR_MAX_SPRITE 32
-#define DINOSAUR_SIZE 32*16
+#define DINOSAUR_SIZE 24*24
 #define GROUND_LEVEL 300.0f
 #define GRAVITY      0.6f
 #define JUMP_FORCE   -6.0f
-const unsigned char birdSpriteLeft[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
+const unsigned char birdSprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
 
     { // State int
       // BIRD symbol 2-5 tick
@@ -164,7 +164,6 @@ const unsigned char dinoSpriteLeft[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
       },
     },
 };
-
 const unsigned char starType1Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
     { // STATE_GO
       {
@@ -178,7 +177,6 @@ const unsigned char starType1Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
       },
     },
 };
-
 const unsigned char starType2Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
     { // STATE_GO
       {
@@ -190,7 +188,6 @@ const unsigned char starType2Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
       },
     },
 };
-
 const unsigned char treeType1Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
     { // STATE_GO
       {
@@ -213,7 +210,6 @@ const unsigned char treeType1Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
       },
     },
 };
-
 const unsigned char treeType2Sprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
     { // STATE_GO
       {
@@ -249,27 +245,33 @@ const unsigned char cloudSprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
       },
     },
 };
-
 const unsigned char moonSprite[][DINOSAUR_MAX_SPRITE][DINOSAUR_SIZE] = {
     {
       {
-          0xC0,0x00, // 1100 0000 0000 0000
-          0x70,0x00, // 0111 0000 0000 0000
-          0x38,0x00, // 0011 1000 0000 0000
-          0x1E,0x00, // 0001 1110 0000 0000
-          0x0F,0x80, // 0000 1111 1000 0000
-          0x07,0xC0, // 0000 0111 1100 0000
-          0x07,0xE0, // 0000 0111 1110 0000
-          0x07,0xE0, // 0000 0111 1110 0000
-          0x07,0xE0, // 0000 0111 1110 0000
-          0x07,0xE0, // 0000 0111 1110 0000
-          0x07,0xE0, // 0000 0111 1110 0000
-          0x07,0xC0, // 0000 0111 1100 0000
-          0x0F,0x80, // 0000 1111 1000 0000
-          0x1E,0x00, // 0001 1110 0000 0000
-          0x38,0x00, // 0011 1000 0000 0000
-          0x70,0x00, // 0111 0000 0000 0000
-          0xC0,0x00, // 1100 0000 0000 0000
+         0x00, 0x7F, 0x80,
+         0x03, 0xFF, 0xE0,
+         0x0F, 0xFF, 0xF8,
+         0x1F, 0xFF, 0xFC,
+         0x3F, 0xFF, 0xFE,
+         0x7E, 0x3F, 0x1F,
+         0x7E, 0x3F, 0x1F,
+         0xFE, 0x3F, 0x1F,
+         0xFF, 0xFF, 0xFF,
+         0xFF, 0xFF, 0xFF,
+         0xFF, 0xE3, 0xFF,
+         0xE3, 0xC1, 0xE3,
+         0xE3, 0xC1, 0xE3,
+         0xE3, 0xC1, 0xE3,
+         0xFF, 0xE3, 0xFF,
+         0xFF, 0xFF, 0xFF,
+         0x7F, 0xFF, 0xFE,
+         0x7F, 0x1E, 0x3E,
+         0x38, 0x1E, 0x1C,
+         0x18, 0x1E, 0x18,
+         0x0F, 0xFF, 0xF0,
+         0x03, 0xFF, 0xE0,
+         0x00, 0xFF, 0x80,
+         0x00, 0x00, 0x00
       },
     },
 };
@@ -278,6 +280,7 @@ DinosaurRun::DinosaurRun(GameMenu* gameMenu, int gameID):
 {
     int dinoRunTimeSlot[] = {5,5};
     int noAnimateTimeSlot[] = {5};
+    int birdFlyTimeSlot[] = {5,5};
     m_dino[GAME_PLAYER1].setSpiteTimeSlot(DINO_STAND,noAnimateTimeSlot,sizeof (noAnimateTimeSlot) / sizeof (noAnimateTimeSlot[0]));
     m_dino[GAME_PLAYER1].setSpiteTimeSlot(DINO_RUN_GO,dinoRunTimeSlot,sizeof (dinoRunTimeSlot) / sizeof (dinoRunTimeSlot[0]));
     m_dino[GAME_PLAYER1].setSpiteTimeSlot(DINO_JUMP_GO_UP,noAnimateTimeSlot,sizeof (noAnimateTimeSlot) / sizeof (noAnimateTimeSlot[0]));
@@ -302,7 +305,12 @@ DinosaurRun::DinosaurRun(GameMenu* gameMenu, int gameID):
         m_trees[treeID].setState(SKY_OBJECT_INIT);
         m_trees[treeID].setSpiteTimeSlot(SKY_OBJECT_GO,noAnimateTimeSlot,sizeof (noAnimateTimeSlot) / sizeof (noAnimateTimeSlot[0]));
     }
-    m_state = GAME_PLAY_STATE::GAME_PLAY_PLAYING;
+
+    for(int birdID = 0; birdID < MAX_NUM_BIRD; birdID++) {
+        m_birds[birdID].setState(SKY_OBJECT_INIT);
+        m_birds[birdID].setSpiteTimeSlot(SKY_OBJECT_GO,birdFlyTimeSlot,sizeof (birdFlyTimeSlot) / sizeof (birdFlyTimeSlot[0]));
+    }
+    m_state = GAME_PLAY_STATE::GAME_PLAY_WAIT;
     m_invertBG = false;
     m_wait = 0;
 }
@@ -314,6 +322,9 @@ DinosaurRun::~DinosaurRun()
 
 void DinosaurRun::loop() {
     switch (m_state) {
+    case GAME_PLAY_STATE::GAME_PLAY_WAIT:
+        waitInput();
+        break;
     case GAME_PLAY_STATE::GAME_PLAY_PLAYING:
         playGame();
         break;
@@ -326,21 +337,42 @@ void DinosaurRun::loop() {
     }
 }
 
+void DinosaurRun::waitInput()
+{
+    // check input
+    if(m_wait == 0) {
+        clearDisplay();
+        updateBackground();
+        updateObstacles();
+        updateDinos();
+        drawBackground();
+        drawObstacles();
+        drawDinos();
+        m_wait++;
+    } else if(m_wait < 30) {
+        m_wait++;
+    } else {
+        bool buttonEnterPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_ENTER) != BUTTON_STATE::BUTTON_NOMAL;
+        bool buttonUpPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_UP) != BUTTON_STATE::BUTTON_NOMAL;
+        bool buttonDownPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_DOWN) != BUTTON_STATE::BUTTON_NOMAL;
+        if(buttonEnterPressed || buttonUpPressed || buttonDownPressed) {
+            setState(GAME_PLAY_STATE::GAME_PLAY_PLAYING);
+        }
+    }
+
+}
+
 void DinosaurRun::playGame()
 {
     clearDisplay();
     // check input
-    if(m_wait < 30) {
-        m_wait++;
-    }
     int state = m_dino[GAME_PLAYER1].state();
     bool buttonEnterPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_ENTER) != BUTTON_STATE::BUTTON_NOMAL;
     bool buttonUpPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_UP) != BUTTON_STATE::BUTTON_NOMAL;
     bool buttonDownPressed = m_gameMenu->app()->buttonState(BUTTON_ID::BTN_DOWN) != BUTTON_STATE::BUTTON_NOMAL;
     if(buttonEnterPressed || buttonUpPressed) {
         if(state == DINO_STAND || state == DINO_DIE) {
-            if(m_gameMenu->app()->buttonState(BUTTON_ID::BTN_ENTER) != BUTTON_STATE::BUTTON_HOLD &&
-                    m_wait >= 30) {
+            if(m_gameMenu->app()->buttonState(BUTTON_ID::BTN_ENTER) != BUTTON_STATE::BUTTON_HOLD) {
                 updateMove(GAME_PLAYER1, DINO_RUN);
             }
         } else {
@@ -360,21 +392,20 @@ void DinosaurRun::playGame()
         setState(GAME_PLAY_STATE::GAME_PLAY_EXIT);
         return;
     }
-//    printf("enter[%d] up[%d] down[%d] dino state[%d]\r\n",
-//           m_gameMenu->app()->buttonState(BUTTON_ID::BTN_ENTER),buttonUpPressed,buttonDownPressed,state);
+    updateBackground();
+    updateObstacles();
     updateDinos();
-//    updateTrees();
-//    updateBirds();
-//    updateBackground();
+    drawBackground();
+    drawObstacles();
     drawDinos();
-//    drawBirds();
-//    drawTree();
-//    drawBackground();
 }
 
 void DinosaurRun::showScore()
 {
-
+    if(m_gameMenu->app()->buttonState(BUTTON_ID::BTN_BACK) == BUTTON_STATE::BUTTON_PRESS) {
+        setState(GAME_PLAY_STATE::GAME_PLAY_EXIT);
+        return;
+    }
 }
 
 void DinosaurRun::exitGame()
@@ -420,20 +451,58 @@ void DinosaurRun::updateMove(int dinoID, int state)
     m_dino[dinoID].setState(state);
 }
 
-void DinosaurRun::updateBirds()
+void DinosaurRun::updateObstacles()
 {
-
-}
-
-void DinosaurRun::updateTrees()
-{
+    bool collide = false;
     float nearestPos = 0;
 
+    for(int birdID = 0; birdID < MAX_NUM_BIRD; birdID++) {
+        if(m_birds[birdID].x > nearestPos) nearestPos = m_birds[birdID].x;
+    }
+
     for(int treeID = 0; treeID < MAX_NUM_TREE; treeID++) {
-        if(m_trees[treeID].state() == SKY_OBJECT_GO) {
-            if(m_trees[treeID].x > nearestPos) nearestPos = m_trees[treeID].x;
+        if(m_trees[treeID].x > nearestPos) nearestPos = m_trees[treeID].x;
+    }
+
+    for(int birdID = 0; birdID < MAX_NUM_BIRD; birdID++) {
+        switch (m_birds[birdID].state()) {
+        case SKY_OBJECT_INIT: {
+            if(nearestPos > 10) continue;
+            m_birds[birdID].setType(random() % 2);
+            m_birds[birdID].setState(SKY_OBJECT_GO);
+            m_birds[birdID].setDirX(-4);
+            m_birds[birdID].x = 128 + random() % 10;
+            m_birds[birdID].y = random() % 2 == 0 ? 64 : 52;
+            m_birds[birdID].width = 24;
+            m_birds[birdID].height = 13;
+            if(m_birds[birdID].x > nearestPos)
+                nearestPos = m_birds[birdID].x;
+        }
+        case SKY_OBJECT_GO: {
+            if(m_birds[birdID].x < - m_birds[birdID].width) {
+                m_birds[birdID].setState(SKY_OBJECT_INIT);
+            }
+        }
+            break;
+        }
+        m_birds[birdID].move();
+        m_birds[birdID].increaseTick(m_birds[birdID].state(), 1);
+        for(int playerID = 0; playerID < 2; playerID++) {
+            if(m_dino[playerID].enabled() &&
+                    m_birds[birdID].collide(m_dino[playerID],8)) {
+//                printf("player[%d] x[%.2f] y[%.2f] w[%.2f] h[%.2f] "
+//                       "collide bird[%d] x[%.2f] y[%.2f] w[%.2f] h[%.2f]\r\n",
+//                       playerID,
+//                       m_dino[playerID].x,m_dino[playerID].y,
+//                       m_dino[playerID].width,m_dino[playerID].height,
+//                       birdID,
+//                       m_birds[birdID].x,m_birds[birdID].y,
+//                       m_birds[birdID].width,m_birds[birdID].height);
+                collide = true;
+            }
         }
     }
+
     for(int treeID = 0; treeID < MAX_NUM_TREE; treeID++) {
         switch (m_trees[treeID].state()) {
         case SKY_OBJECT_INIT: {
@@ -450,6 +519,8 @@ void DinosaurRun::updateTrees()
                 m_trees[treeID].width = 16;
                 m_trees[treeID].height = 16;
             }
+            if(m_trees[treeID].x > nearestPos)
+                nearestPos = m_trees[treeID].x;
         }
         case SKY_OBJECT_GO: {
             if(m_trees[treeID].x < - m_trees[treeID].width) {
@@ -460,6 +531,23 @@ void DinosaurRun::updateTrees()
         }
         m_trees[treeID].move();
         m_trees[treeID].increaseTick(m_trees[treeID].state(), 1);
+        for(int playerID = 0; playerID < 2; playerID++) {
+            if(m_dino[playerID].enabled() &&
+                    m_trees[treeID].collide(m_dino[playerID],8)) {
+//                printf("player[%d] x[%.2f] y[%.2f] w[%.2f] h[%.2f] "
+//                       "collide bird[%d] x[%.2f] y[%.2f] w[%.2f] h[%.2f]\r\n",
+//                       playerID,
+//                       m_dino[playerID].x,m_dino[playerID].y,
+//                       m_dino[playerID].width,m_dino[playerID].height,
+//                       treeID,
+//                       m_trees[treeID].x,m_trees[treeID].y,
+//                       m_trees[treeID].width,m_trees[treeID].height);
+                collide = true;
+            }
+        }
+    }
+    if(collide) {
+        setState(GAME_PLAY_STATE::GAME_PLAY_SHOW_SCORE);
     }
 }
 
@@ -537,10 +625,6 @@ void DinosaurRun::updateDinos()
         }
         m_dino[playerID].move();
         m_dino[playerID].increaseTick(m_dino[playerID].state(), 1);
-        printf("dino state[%d] y[%.02f] dirY[%.02f]\r\n",
-               m_dino[playerID].state(),
-               m_dino[playerID].y,
-               m_dino[playerID].dirY());
     }
 }
 
@@ -552,7 +636,7 @@ void DinosaurRun::updateBackground()
         case SKY_OBJECT_INIT: {
             m_stars[starID].setType(random() % 2);
             m_stars[starID].setState(SKY_OBJECT_GO);
-            m_stars[starID].setDirX(-1);
+            m_stars[starID].setDirX(-0.2);
             m_stars[starID].x = 128 + random() % 100;
             m_stars[starID].y = random() % 20;
             if(m_stars[starID].type() == STAR_TYPE_1) {
@@ -580,7 +664,7 @@ void DinosaurRun::updateBackground()
         case SKY_OBJECT_INIT: {
             m_clouds[starID].setType(random() % 2);
             m_clouds[starID].setState(SKY_OBJECT_GO);
-            m_clouds[starID].setDirX(-1);
+            m_clouds[starID].setDirX(-0.2);
             m_clouds[starID].x = 128 + random() % 100;
             m_clouds[starID].y = random() % 20;
             m_clouds[starID].width = 24;
@@ -602,11 +686,11 @@ void DinosaurRun::updateBackground()
     case SKY_OBJECT_INIT: {
         m_moon.setType(random() % 2);
         m_moon.setState(SKY_OBJECT_GO);
-        m_moon.setDirX(-1);
+        m_moon.setDirX(-0.2);
         m_moon.x = 128 + random() % 64;
         m_moon.y = random() % 10;
-        m_moon.width = 16;
-        m_moon.height = 17;
+        m_moon.width = 24;
+        m_moon.height = 24;
     }
     case SKY_OBJECT_GO: {
         if(m_moon.x < - m_moon.width) {
@@ -618,22 +702,24 @@ void DinosaurRun::updateBackground()
     m_moon.move();
     m_moon.increaseTick(m_moon.state(), 1);
 }
-void DinosaurRun::drawBirds()
+void DinosaurRun::drawObstacles()
 {
+    for(int birdID = 0; birdID < MAX_NUM_BIRD; birdID++) {
+        LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+            (unsigned char*)birdSprite[0][m_birds[birdID].spiteID(m_birds[birdID].state())],
+            m_birds[birdID].width,m_birds[birdID].height,
+            m_birds[birdID].x ,m_birds[birdID].y,m_invertBG);
+    }
 
-}
-
-void DinosaurRun::drawTree()
-{
     for(int treeID = 0; treeID < MAX_NUM_TREE; treeID++) {
         if(m_trees[treeID].type() == TREE_TYPE_1) {
             LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                (unsigned char*)treeType1Sprite[m_trees[treeID].state()][m_trees[treeID].spiteID(m_trees[treeID].state())],
+                (unsigned char*)treeType1Sprite[0][m_trees[treeID].spiteID(m_trees[treeID].state())],
                 m_trees[treeID].width,m_trees[treeID].height,
                 m_trees[treeID].x ,m_trees[treeID].y,m_invertBG);
         } else if(m_trees[treeID].type() == TREE_TYPE_2) {
             LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                (unsigned char*)treeType2Sprite[m_trees[treeID].state()][m_trees[treeID].spiteID(m_trees[treeID].state())],
+                (unsigned char*)treeType2Sprite[0][m_trees[treeID].spiteID(m_trees[treeID].state())],
                 m_trees[treeID].width,m_trees[treeID].height,
                 m_trees[treeID].x ,m_trees[treeID].y,m_invertBG);
         }
@@ -670,16 +756,21 @@ void DinosaurRun::drawDinos()
 
 void DinosaurRun::drawBackground()
 {
+    // draw ground
+    LCDLibrary::drawLine(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
+                         0,m_gameMenu->app()->getScreenHeight() - 10,
+                         m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight() - 10,
+                         1);
     // draw stars
     for(int starID = 0; starID < 2; starID++) {
         if(m_stars[starID].type() == STAR_TYPE_1) {
             LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                (unsigned char*)starType1Sprite[m_stars[starID].state()][m_stars[starID].spiteID(m_stars[starID].state())],
+                (unsigned char*)starType1Sprite[0][m_stars[starID].spiteID(m_stars[starID].state())],
                 m_stars[starID].width,m_stars[starID].height,
                 m_stars[starID].x ,m_stars[starID].y,m_invertBG);
         } else if(m_stars[starID].type() == STAR_TYPE_2) {
             LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-                (unsigned char*)starType2Sprite[m_stars[starID].state()][m_stars[starID].spiteID(m_stars[starID].state())],
+                (unsigned char*)starType2Sprite[0][m_stars[starID].spiteID(m_stars[starID].state())],
                 m_stars[starID].width,m_stars[starID].height,
                 m_stars[starID].x ,m_stars[starID].y,m_invertBG);
         }
@@ -688,14 +779,14 @@ void DinosaurRun::drawBackground()
     // draw clouds
     for(int cloudID = 0; cloudID < 2; cloudID++) {
         LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-            (unsigned char*)cloudSprite[m_clouds[cloudID].state()][m_clouds[cloudID].spiteID(m_clouds[cloudID].state())],
+            (unsigned char*)cloudSprite[0][m_clouds[cloudID].spiteID(m_clouds[cloudID].state())],
             m_clouds[cloudID].width,m_clouds[cloudID].height,
             m_clouds[cloudID].x ,m_clouds[cloudID].y,m_invertBG);
     }
 
     // draw moon
     LCDLibrary::drawObject(m_gameMenu->app()->getScreenData(),m_gameMenu->app()->getScreenWidth(),m_gameMenu->app()->getScreenHeight(),
-        (unsigned char*)moonSprite[m_moon.state()][m_moon.spiteID(m_moon.state())],
+        (unsigned char*)moonSprite[0][m_moon.spiteID(m_moon.state())],
         m_moon.width,m_moon.height,
         m_moon.x ,m_moon.y,m_invertBG);
 }
